@@ -1,0 +1,17 @@
+{
+  "name": "cwlworkshop",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx pug index.pug",
+    "watch": "npx pug --watch index.pug",
+    "server": "npx http-server"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "http-server": "^0.11.1",
+    "pug-cli": "^1.0.0-alpha6"
+  }
+}

@@ -1,0 +1,108 @@
+section
+    section
+        h1 Workflows
+    section
+        h2 Motivation
+        ul
+            li
+                | Most bioinformatics involves running many command-line tools; aligners like 
+                | #[code bwa], variant callers like #[code gatk], and RNA Seq tools like #[code edgeR]
+            li
+                | However, once this list of tools reaches a certain quantity and complexity, it becomes hard to 
+                | reproduce exactly what you ran and with what parameters
+    section
+        h2 Compared to Bash
+        ul
+            li A bash script may help with this, but proper workflows...
+                ul
+                    li Run fully parallel to speed up execution
+                    li Work automatically with batch systems like SLURM
+                    li Are written declaratively, allowing the system to work out the optimal order of execution for you
+                    li Save you having to hard-code input parameters and temporary files
+                    li Are much more readable than bash
+section
+    section
+        h1 CWL Structure
+    section
+        h2 Tools 
+            span.icon
+                i.fas.fa-toolbox
+        ul
+            li Are wrappers that describe to the CWL engine how a tool works
+            li Include its inputs and outputs, and their format
+            li Any given tool can have a "correct" tool definition, unlike a workflow
+            li Some already exist for commonly used tools
+            
+    section
+        h2 Workflows 
+            span.icon
+                i.fas.fa-project-diagram
+        ul
+            li Explain how tools are connected to each other and in what order
+            li Are generally project-specific
+            li Can be nested inside each other
+                    
+section
+    section
+        h1 Tooling for CWL
+    section
+        h2 Rabix
+    section
+        h2 Toil
+        ul
+            li CWL has a number of "executors" - applications that can actually run CWL
+            li. 
+                Toil is the best supported executor - it can run workflows on your laptop, on a cluster, on NeCTAR, on
+                AWS, or an a number of other platforms
+            li
+                p To install Toil for CWL, run
+                code.language-bash.
+                    pip install toil[cwl]
+        
+section
+    section
+        h1 Running CWL
+    section
+        h2 Obtaining Tool Definitions
+    section
+        h2 Exercise - RNA Seq
+section
+    section
+        h1 Wrapping Tools
+        
+    section
+        h2 Rabix Composer
+        
+    section
+        h2 Exercise - Wrapping <some RNA seq tool>
+        
+    section
+        h2 Docker
+        
+    section
+        h2 Exercise - Updating our tool to use Docker
+        
+    section
+        h2 Writing tool definitions by hand
+        
+    section
+        h2 Exercise - Writing a third tool manually
+        
+section
+    section
+        h1 Writing Workflows
+        
+    section
+        h2 Workflows in the Rabix Composer
+        
+    section
+        h2 Exercise - Making an RNA Seq Pipeline in Rabix
+        
+    section
+        h2 Workflows in CWL Files
+        
+    section
+        h2 Exercise - Making an RNA Seq Pipeline Manually
+        
+section
+    h1 Sharing CWL
