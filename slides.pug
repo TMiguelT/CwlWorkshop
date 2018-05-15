@@ -64,14 +64,58 @@ section
         h1 Running CWL
     section
         h2 Obtaining Tool Definitions
+        p There are a few useful sources of CWL tool definitions
+
     section
-        h2 Exercise - RNA Seq
+        h3 Dockstore
+        ul
+            li
+                a(href="https://dockstore.org") Dockstore - a database of CWL and WDL workflows and tools
+            li Once you find a tool definition you like, you can download it with
+            code.language-bash.
+                dockstore tool cwl --entry [SOME PATH]
+            p e.g.
+            code.language-bash.
+                dockstore tool cwl --entry quay.io/pancancer/pcawg-bwa-mem-workflow:develop
+
+    section
+        h3 Official CWL Workflows Repository
+        ul
+            li
+                a(href="https://github.com/common-workflow-language/workflows") https://github.com/common-workflow-language/workflows
+            li Once you find a tool definition you like, right-click on the "Raw" button and click "Save link as"
+    section
+        h2 Exercise - Running BWA
+        ul
+            li Try to find a simple wrapper for the tool #[code bwa]
+            li Download that tool definition, and run it on the provided fastq files with
+                code.language-bash toil-cwl-runner bwa.cwl
+
+    section
+        h2 Exercise - Running BWA
+        ul
+            li This didn't do much beyond just running the #[code bwa] tool
+            li However, it did ensure the tool ran in a Docker container with BWA installed
+
 section
     section
         h1 Wrapping Tools
-        
+
+    section
+        h2 More on CWL Tools
+        ul
+            li At minimum, a CWL tool definition must have three things
+                ul
+                    li A list of inputs (command line arguments and stdin)
+                    li A list of outputs (files and stdout)
+                    li A command (tool) to run
+            li We will investigate how to make these tool definitions first using Rabix, and then from scratch
+
     section
         h2 Rabix Composer
+        ul
+            li Start by making a new tool definition in Rabix
+                img(src='rabix_new_tool.png')
         
     section
         h2 Exercise - Wrapping <some RNA seq tool>
