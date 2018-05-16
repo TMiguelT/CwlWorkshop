@@ -1,8 +1,11 @@
-section
-    section
+.remark-slide
+
+section.content.remark-slide-content
+    section.flex(style='justify-content: center;')
         h1 Workflows
+        img.image(src='workflow.svg', style='height: 50%; display: inline-block; border: none')
     section
-        h2 Motivation
+        h2.title  Motivation
         ul
             li
                 | Most bioinformatics involves running many command-line tools; aligners like 
@@ -11,7 +14,7 @@ section
                 | However, once this list of tools reaches a certain quantity and complexity, it becomes hard to 
                 | reproduce exactly what you ran and with what parameters
     section
-        h2 Compared to Bash
+        h2.title  Compared to Bash
         ul
             li A bash script may help with this, but proper workflows...
                 ul
@@ -20,7 +23,8 @@ section
                     li Are written declaratively, allowing the system to work out the optimal order of execution for you
                     li Save you having to hard-code input parameters and temporary files
                     li Are much more readable than bash
-section
+| ---
+section.content.remark-slide-content
     section
         h1 CWL Structure
     section
@@ -42,7 +46,7 @@ section
             li Are generally project-specific
             li Can be nested inside each other
                     
-section
+section.content
     section
         h1 Tooling for CWL
     section
@@ -59,7 +63,7 @@ section
                 code.language-bash.
                     pip install toil[cwl]
         
-section
+section.content
     section
         h1 Running CWL
     section
@@ -74,9 +78,9 @@ section
             li Once you find a tool definition you like, you can download it with
             code.language-bash.
                 dockstore tool cwl --entry [SOME PATH]
-            p e.g.
-            code.language-bash.
-                dockstore tool cwl --entry quay.io/pancancer/pcawg-bwa-mem-workflow:develop
+            li e.g.
+                code.language-bash.
+                    dockstore tool cwl --entry quay.io/pancancer/pcawg-bwa-mem-workflow:develop
 
     section
         h3 Official CWL Workflows Repository
@@ -97,7 +101,7 @@ section
             li This didn't do much beyond just running the #[code bwa] tool
             li However, it did ensure the tool ran in a Docker container with BWA installed
 
-section
+section.content
     section
         h1 Wrapping Tools
 
@@ -106,19 +110,58 @@ section
         ul
             li At minimum, a CWL tool definition must have three things
                 ul
+                    li A command (tool) to run
                     li A list of inputs (command line arguments and stdin)
                     li A list of outputs (files and stdout)
-                    li A command (tool) to run
+    section
+        h2 More on CWL Tools
+        ul
             li We will investigate how to make these tool definitions first using Rabix, and then from scratch
 
     section
-        h2 Rabix Composer
-        ul
-            li Start by making a new tool definition in Rabix
-                img(src='rabix_new_tool.png')
-        
+        h2.title Exercise - Wrapping BWA
+        article.message.is-primary
+            .message-body
+                | Lorem ipsum dolor sit amet, consectetur adipiscing elit. <strong>Pellentesque risus mi</strong>, tempus quis placerat ut, porta nec nulla. Vestibulum rhoncus ac ex sit amet fringilla. Nullam gravida purus diam, et dictum <a>felis venenatis</a> efficitur. Aenean ac <em>eleifend lacus</em>, in mollis lectus. Donec sodales, arcu et sollicitudin porttitor, tortor urna tempor ligula, id porttitor mi magna a neque. Donec dui urna, vehicula et sem eget, facilisis sodales sem.
+
     section
-        h2 Exercise - Wrapping <some RNA seq tool>
+        h2.title Exercise - Wrapping BWA
+        ol.is-marginless
+            li Start by making a new tool definition in Rabix
+        img(src='rabix_new_tool.png')
+
+    section
+        h2.title Exercise - Wrapping BWA
+        ol.is-marginless(start=2)
+            li Name it after the tool you're wrapping
+        img(src='bwa_tool.png')
+
+    section
+        h2.title Exercise - Wrapping BWA
+        ol.is-marginless(start=3)
+            li Add the "base command" - the fixed part of the command that will never change
+        .flex(style='justify-content: center;')
+            img(src='bwa_base_command.png')
+
+    section
+        h2.title Exercise - Wrapping BWA
+        ol.is-marginless(start=4)
+            li Define the output(s).
+        .flex(style='justify-content: center;')
+            img(src='bwa_output_ports.png')
+
+    section
+        h2.title Exercise - Wrapping BWA
+        ol.is-marginless(start=5)
+            li If the command produces output from stdout, you must specify that in the "Other" section
+        .flex(style='justify-content: center;')
+            img(src='bwa_other.png')
+
+    section
+        h2 Exercise - Wrapping Samtools Sort
+        ul
+            li Next, we need to
+
         
     section
         h2 Docker
@@ -132,7 +175,7 @@ section
     section
         h2 Exercise - Writing a third tool manually
         
-section
+section.content
     section
         h1 Writing Workflows
         
@@ -148,5 +191,5 @@ section
     section
         h2 Exercise - Making an RNA Seq Pipeline Manually
         
-section
+section.content
     h1 Sharing CWL

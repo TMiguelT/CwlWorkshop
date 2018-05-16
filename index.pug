@@ -1,13 +1,18 @@
 html
     head
-        link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.6.0/css/reveal.min.css')
-        link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.6.0/css/theme/white.min.css')
-    body
-        .reveal
-            .slides
-                include slides
+        //link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.6.0/css/reveal.min.css')
+        //link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.6.0/css/theme/white.min.css')
+        link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css')
+        style.
 
-        script(src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.6.0/js/reveal.min.js")
+    body
+        textarea#source
+        //.reveal
+        //    .slides
+        //        include slides
+
+        script(src="https://remarkjs.com/downloads/remark-latest.min.js")
+        //script(src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.6.0/js/reveal.min.js")
         script(
             defer
             src="https://use.fontawesome.com/releases/v5.0.13/js/all.js"
@@ -15,8 +20,13 @@ html
             crossorigin="anonymous"
         )
         script.
-            Reveal.initialize({
-                transitionSpeed: 'fast',
-                transition: 'none'
+            var slideshow = remark.create({
+                sourceUrl: 'slides.md'
             });
+            // Reveal.initialize({
+            //     transitionSpeed: 'fast',
+            //     transition: 'none',
+            //     history: true,
+            //     center: false
+            // });
 
