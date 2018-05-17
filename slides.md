@@ -2,7 +2,9 @@ layout: true
 class: content
 ---
 # Part 1: Introduction
-![](workflow.svg)
+.center[
+![](cwl.png)
+]
 ---
 ## Motivation
 
@@ -43,6 +45,9 @@ Seq tools like `edgeR`
 
 ---
 # Part 2: Tools
+.center[
+![](tool.png)
+]
 ---
 ## Obtaining Tool Definitions
 
@@ -71,8 +76,6 @@ Save this tool definition - we'll use it in our pipeline later
 * This didn't do much beyond just running the `bwa` tool
 * However, it did ensure the tool ran in a Docker container with BWA installed
 ---
-# Wrapping Tools
----
 ## More on CWL Tools
 
 * At minimum, a CWL tool definition must have three things
@@ -83,11 +86,12 @@ Save this tool definition - we'll use it in our pipeline later
 ## More on CWL Tools
 * We will investigate how to make these tool definitions first using Rabix, and then from scratch
 ---
-# Exercise - Wrapping BWA
+# Exercise - Wrapping Samtools
 .alert.alert-primary[
 .alert-heading[
 ### Exercise
 ]
+TODO: Change this to samtools
 Follow along with the instructions to make a tool wrapper for BWA
 ]
 ---
@@ -135,6 +139,25 @@ Follow along with the instructions to make a tool wrapper for BWA
 ]
 * Use what you have learned from wrapping `bwa` to make a wrapper for the `samtools index` subcommand
 * You can find the samtools manual, including all command-line flags for `samtools index` here: <http://www.htslib.org/doc/samtools.html#COMMANDS_AND_OPTIONS>
+]
+---
+## Docker
+* We have given CWL instructions on how to *run* these tools, but not how to *get* these tools
+* For this we can use Docker
+* Docker images are tiny virtual machines that have applications pre-installed inside of them
+* You can find docker images of many common bioinformatics tools in [Biocontainers](https://biocontainers.pro/registry/)
+* Once you've found a Docker image, you can plug it into the "Docker Image" section in Rabix:
+
+    ![](docker_container_section.png)
+
+---
+## Exercise - Updating our tool to use Docker
+.alert.alert-primary[
+.alert-heading[
+### Exercise
+]
+* Find an appropriate Docker image for both `samtools index` and `bwa`, using Biocontainers
+* Once you have found the right images, plug them into the "Docker Image" section
 ]
 ---
 ## Tool YAML
@@ -244,37 +267,58 @@ stdout: alignment.bam
 ]
 ]
 ---
-## Docker
-* We have given CWL instructions on how to *run* these tools, but not how to *get* these tools
-* For this we can use Docker
-* Docker images are tiny virtual machines that have applications pre-installed inside of them
-* You can find docker images of many common bioinformatics tools in [Biocontainers](https://biocontainers.pro/registry/)
-* Once you've found a Docker image, you can plug it into the "Docker Image" section in Rabix:
-
-    ![](docker_container_section.png)
-
----
-## Exercise - Updating our tool to use Docker
+## Exercise - Writing a third tool manually
 .alert.alert-primary[
 .alert-heading[
 ### Exercise
 ]
-* Find an appropriate Docker image for both `samtools index` and `bwa`, using Biocontainers
-* Once you have found the right images, plug them into the "Docker Image" section
+* Use what you've learned about YAML tool definitions to write a tool definition for `samtools sort`
+* You can find the samtools manual, including all command-line flags for `samtools sort` here: <http://www.htslib.org/doc/samtools.html#COMMANDS_AND_OPTIONS>
 ]
 ---
-## Writing tool definitions by hand
+# Part 3: Writing Workflows
+![](workflow.svg)
 ---
-## Exercise - Writing a third tool manually
----
-# Writing Workflows
+## Workflows - Refresher
+
+* Workflows define how your tools connect to each other to form a data flow
 ---
 ## Workflows in the Rabix Composer
+
+* In rabix, you add tools to your workflow by dragging and dropping from the sidebar
+* To connect the tools, you then drag a line between input ports and output ports
 ---
 ## Exercise - Making an RNA Seq Pipeline in Rabix
+.alert.alert-primary[
+.alert-heading[
+### Exercise
+]
+* Make a basic workflow that connects `bwa` → `samtools sort` → `samtools index` → `freebayes`
+]
+---
+## Scatter
+---
+.alert.alert-primary[
+.alert-heading[
+### Exercise
+]
+* Make a workflow that connects `bwa` → `samtools sort` → `samtools index` → `VarDict`, using scatter
+]
+
 ---
 ## Workflows in CWL Files
+
 ---
-## Exercise - Making an RNA Seq Pipeline Manually
+.alert.alert-primary[
+.alert-heading[
+## Exercise - Manual Workflow
+]
+* Using YAML, re-implement the basic germline variant calling workflow
+]
 ---
-# Sharing CWL
+# Part 4: Sharing CWL
+
+---
+# References
+* https://openclipart.org/detail/28286/icontool
+* https://github.com/common-workflow-language/logo/blob/master/LICENSE.md
