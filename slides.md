@@ -32,7 +32,11 @@ Seq tools like `edgeR`
 ---
 ## Tooling for CWL
 * Rabix
+    * <http://rabix.io/>
+    * Is an open source toolkit for creating and running CWL
+    * Its most useful tool is the Rabix Composer - an application for writing CWL tools and workflows graphically
 * Toil
+    * <http://toil.ucsc-cgl.org/>
     * CWL has a number of "executors" - applications that can actually run CWL
     * Toil is the best supported executor - it can run workflows on your laptop, on a cluster, on NeCTAR, on AWS, or an a number of other platforms
     * To install Toil for CWL, run `pip install toil[cwl]`
@@ -55,24 +59,30 @@ There are a few useful sources of CWL tool definitions:
 * Dockstore
     * <https://dockstore.org>
     * Dockstore - a database of CWL and WDL workflows and tools
-    * Once you find a tool definition you like, you can download it with `dockstore tool cwl --entry [SOME PATH]
-    * e.g. `dockstore tool cwl --entry quay.io/pancancer/pcawg-bwa-mem-workflow:develop`
+    * Once you find a tool definition you like, click "Files" → "Descriptor Files" → Download
+.center[
+![](dockstore_circled.png)
+]
+---
+## Obtaining Tool Definitions
+
+There are a few useful sources of CWL tool definitions:
 * Official CWL Workflows Repository
     * <https://github.com/common-workflow-language/workflows>
     * Once you find a tool definition you like, right-click on the "Raw" button and click "Save link as" section
----
-## Exercise - Running Trimmomatic
-
-* Try to find a simple wrapper for the tool `bwa`
-* Download that tool definition, and run it on the provided fastq files with `toil-cwl-runner bwa.cwl`
-
-.alert.alert-secondary[
-Save this tool definition - we'll use it in our pipeline later
+.center[
+![](workflow_repo.png)
 ]
-
 ---
-## Exercise - Running Trimmomatic
-
+## Obtaining Tool Definitions
+.alert.alert-primary[
+.alert-heading[
+### Exercise
+]
+* Try to find a simple wrapper for the tool `bwa mem` from the
+* Download that tool definition, and run it on the provided fastq files with `toil-cwl-runner bwa.cwl`
+* Save this tool definition - we'll use it in our pipeline later
+]
 * This didn't do much beyond just running the `bwa` tool
 * However, it did ensure the tool ran in a Docker container with BWA installed
 ---
@@ -82,35 +92,32 @@ Save this tool definition - we'll use it in our pipeline later
     * A command (to to run
     * A list of inputs (command line arguments and stdin)
     * A list of outputs (files and stdout)
----
-## More on CWL Tools
 * We will investigate how to make these tool definitions first using Rabix, and then from scratch
 ---
-# Exercise - Wrapping Samtools
+# Wrapping Samtools
 .alert.alert-primary[
 .alert-heading[
 ### Exercise
 ]
-TODO: Change this to samtools
-Follow along with the instructions to make a tool wrapper for BWA
+Follow along with the instructions to make a tool wrapper for `samtools sort`
 ]
 ---
 ## Exercise - Wrapping BWA
-1. Start by making a new tool definition in Rabix
+1\. Start by making a new tool definition in Rabix
 
 .center[
 ![](rabix_new_tool.png)
 ]
 ---
 ## Exercise - Wrapping BWA
-2. Name it after the tool you're wrapping
+2\. Name it after the tool you're wrapping
 
 .center[
 ![](bwa_tool.png)
 ]
 ---
 ## Exercise - Wrapping BWA
-3. Add the "base command" - the fixed part of the command that will never change
+3\. Add the "base command" - the fixed part of the command that will never change
 
 .center[
 ![](bwa_base_command.png)
@@ -118,7 +125,7 @@ Follow along with the instructions to make a tool wrapper for BWA
 ---
 ## Exercise - Wrapping BWA
 
-4. Define the output(s)
+4\. Define the output(s)
 
 .center[
 ![](bwa_output_ports.png)
@@ -126,7 +133,7 @@ Follow along with the instructions to make a tool wrapper for BWA
 ---
 ## Exercise - Wrapping BWA
 
-* If the command produces output from stdout, you must specify that in the "Other" section
+5\. If the command produces output from stdout, you must specify that in the "Other" section
 
 .center[![](bwa_other.png)]
 ---
