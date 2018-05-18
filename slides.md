@@ -80,7 +80,8 @@ There are a few useful sources of CWL tool definitions:
 ### Exercise
 ]
 * Try to find a simple wrapper for the tool `bwa mem` from the
-* Download that tool definition, and run it on the provided fastq files with `toil-cwl-runner bwa.cwl`
+* Download that tool definition, and run it on the provided data with `toil-cwl-runner bwa.cwl` (it should prompt you
+    on how to specify the input files)
 * Save this tool definition - we'll use it in our pipeline later
 ]
 * This didn't do much beyond just running the `bwa` tool
@@ -113,39 +114,38 @@ Follow along with the instructions to make a tool wrapper for `samtools sort`
 2\. Name it after the tool you're wrapping
 
 .center[
-![](bwa_tool.png)
+![](rabix_samtools_name.png)
 ]
 ---
 ## Exercise - Wrapping BWA
 3\. Add the "base command" - the fixed part of the command that will never change
 
 .center[
-![](bwa_base_command.png)
+![](rabix_samtools_base.png)
 ]
 ---
 ## Exercise - Wrapping BWA
 
-4\. Define the output(s)
+4\. Define the inputs(s)
 
 .center[
-![](bwa_output_ports.png)
+![](rabix_samtools_inputs.png)
 ]
 ---
 ## Exercise - Wrapping BWA
 
-5\. If the command produces output from stdout, you must specify that in the "Other" section
+5\. Define the output(s)
 
-.center[![](bwa_other.png)]
----
-## Exercise - Wrapping Samtools Sort
-
-* Next, we need to wrap `samtools` - a utility for working with alignment files
-.alert.alert-primary[
-.alert-heading[
-### Exercise
+.center[
+![](rabix_samtools_outputs.png)
 ]
-* Use what you have learned from wrapping `bwa` to make a wrapper for the `samtools index` subcommand
-* You can find the samtools manual, including all command-line flags for `samtools index` here: <http://www.htslib.org/doc/samtools.html#COMMANDS_AND_OPTIONS>
+---
+## Exercise - Wrapping BWA
+
+6\. If the command produces output from stdout, you must specify that in the "Other" section
+
+.center[
+![](rabix_samtools_other.png)
 ]
 ---
 ## Docker
@@ -158,13 +158,45 @@ Follow along with the instructions to make a tool wrapper for `samtools sort`
     ![](docker_container_section.png)
 
 ---
-## Exercise - Updating our tool to use Docker
+## Updating our tool to use Docker
 .alert.alert-primary[
 .alert-heading[
 ### Exercise
 ]
 * Find an appropriate Docker image for both `samtools index` and `bwa`, using Biocontainers
 * Once you have found the right images, plug them into the "Docker Image" section
+]
+---
+## Secondary Files
+
+* Some files, like indexes, are never considered a main input file, but are instead designed to accompany another file,
+for example `.bai` files which accompany `bam` alignments, and `.tbi` indices which accompany `vcf` variant calls.
+* These are called secondary files
+* For example, this input description shows a reference genome with associated BWA indexes:
+```yaml
+reference:
+  type: File
+  secondaryFiles:
+      - .amb
+      - .ann
+      - .bwt
+      - .pac
+      - .sa
+  inputBinding:
+    position: 2
+```
+---
+##
+---
+## Wrapping Samtools Index
+
+* Next, we need to wrap `samtools` - a utility for working with alignment files
+.alert.alert-primary[
+.alert-heading[
+### Exercise
+]
+* Use what you have learned from wrapping `bwa` to make a wrapper for the `samtools index` subcommand
+* You can find the samtools manual, including all command-line flags for `samtools index` here: <http://www.htslib.org/doc/samtools.html#COMMANDS_AND_OPTIONS>
 ]
 ---
 ## Tool YAML
