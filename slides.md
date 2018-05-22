@@ -148,6 +148,18 @@ Follow along with the instructions to make a tool wrapper for `samtools sort`
 ![](images/rabix_samtools_other.png)
 ]
 ---
+## Wrapping Freebayes
+.alert.alert-primary[
+.alert-heading[
+### Exercise
+]
+* [Freebayes](https://github.com/ekg/freebayes) is a variant caller, which takes a BAM alignment and determines how this alignment differs from the "normal"
+reference genome
+* Freebayes is called on the command-line as follows: `freebayes --fasta-reference h.sapiens.fasta NA20504.bam`
+* Write a new CWL tool wrapper for Freebayes that supports this command
+]
+
+---
 ## Docker
 * We have given CWL instructions on how to *run* these tools, but not how to *get* these tools
 * For this we can use Docker
@@ -163,30 +175,19 @@ Follow along with the instructions to make a tool wrapper for `samtools sort`
 .alert-heading[
 ### Exercise
 ]
-* Find an appropriate Docker image for both `samtools index` and `bwa`, using Biocontainers
+* Find an appropriate Docker image for `bwa`, `samtools sort` and `freebayes`, using Biocontainers
 * Once you have found the right images, plug them into the "Docker Image" section
 ]
+
 ---
 ## Secondary Files
-
 * Some files, like indexes, are never considered a main input file, but are instead designed to accompany another file,
 for example `.bai` files which accompany `bam` alignments, and `.tbi` indices which accompany `vcf` variant calls.
-* These are called secondary files
-* For example, this input description shows a reference genome with associated BWA indexes:
-```yaml
-reference:
-  type: File
-  secondaryFiles:
-      - .amb
-      - .ann
-      - .bwt
-      - .pac
-      - .sa
-  inputBinding:
-    position: 2
-```
+* These are called secondary files:
+![](images/secondary_file.png)
 ---
-##
+## JavaScript Expressions
+* Sometimes, some of the values
 ---
 ## Wrapping Samtools Index
 
@@ -197,6 +198,7 @@ reference:
 ]
 * Use what you have learned from wrapping `bwa` to make a wrapper for the `samtools index` subcommand
 * You can find the samtools manual, including all command-line flags for `samtools index` here: <http://www.htslib.org/doc/samtools.html#COMMANDS_AND_OPTIONS>
+* The output from `samtools index` will be a BAM file, with its `.bai` index as a secondary file
 ]
 ---
 ## Tool YAML
