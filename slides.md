@@ -308,13 +308,12 @@ stdout: alignment.bam
 ]
 ]
 ---
-## Exercise - Writing a third tool manually
+## Wrapping VarDict
 .alert.alert-primary[
 .alert-heading[
 ### Exercise
 ]
-* Use what you've learned about YAML tool definitions to write a tool definition for `samtools sort`
-* You can find the samtools manual, including all command-line flags for `samtools sort` here: <http://www.htslib.org/doc/samtools.html#COMMANDS_AND_OPTIONS>
+* Use what you've learned about YAML tool definitions to write a tool definition for `VarDictJava`
 ]
 ---
 # Part 3: Writing Workflows
