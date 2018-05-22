@@ -3,7 +3,7 @@ class: content
 ---
 # Part 1: Introduction
 .center[
-![](cwl.png)
+![](images/cwl.png)
 ]
 ---
 ## Motivation
@@ -50,7 +50,7 @@ Seq tools like `edgeR`
 ---
 # Part 2: Tools
 .center[
-![](tool.png)
+![](images/tool.png)
 ]
 ---
 ## Obtaining Tool Definitions
@@ -61,7 +61,7 @@ There are a few useful sources of CWL tool definitions:
     * Dockstore - a database of CWL and WDL workflows and tools
     * Once you find a tool definition you like, click "Files" → "Descriptor Files" → Download
 .center[
-![](dockstore_circled.png)
+![](images/dockstore_circled.png)
 ]
 ---
 ## Obtaining Tool Definitions
@@ -71,7 +71,7 @@ There are a few useful sources of CWL tool definitions:
     * <https://github.com/common-workflow-language/workflows>
     * Once you find a tool definition you like, right-click on the "Raw" button and click "Save link as" section
 .center[
-![](workflow_repo.png)
+![](images/workflow_repo.png)
 ]
 ---
 ## Obtaining Tool Definitions
@@ -107,21 +107,21 @@ Follow along with the instructions to make a tool wrapper for `samtools sort`
 1\. Start by making a new tool definition in Rabix
 
 .center[
-![](rabix_new_tool.png)
+![](images/rabix_new_tool.png)
 ]
 ---
 ## Exercise - Wrapping BWA
 2\. Name it after the tool you're wrapping
 
 .center[
-![](rabix_samtools_name.png)
+![](images/rabix_samtools_name.png)
 ]
 ---
 ## Exercise - Wrapping BWA
 3\. Add the "base command" - the fixed part of the command that will never change
 
 .center[
-![](rabix_samtools_base.png)
+![](images/rabix_samtools_base.png)
 ]
 ---
 ## Exercise - Wrapping BWA
@@ -129,7 +129,7 @@ Follow along with the instructions to make a tool wrapper for `samtools sort`
 4\. Define the inputs(s)
 
 .center[
-![](rabix_samtools_inputs.png)
+![](images/rabix_samtools_inputs.png)
 ]
 ---
 ## Exercise - Wrapping BWA
@@ -137,7 +137,7 @@ Follow along with the instructions to make a tool wrapper for `samtools sort`
 5\. Define the output(s)
 
 .center[
-![](rabix_samtools_outputs.png)
+![](images/rabix_samtools_outputs.png)
 ]
 ---
 ## Exercise - Wrapping BWA
@@ -145,7 +145,7 @@ Follow along with the instructions to make a tool wrapper for `samtools sort`
 6\. If the command produces output from stdout, you must specify that in the "Other" section
 
 .center[
-![](rabix_samtools_other.png)
+![](images/rabix_samtools_other.png)
 ]
 ---
 ## Docker
@@ -155,7 +155,7 @@ Follow along with the instructions to make a tool wrapper for `samtools sort`
 * You can find docker images of many common bioinformatics tools in [Biocontainers](https://biocontainers.pro/registry/)
 * Once you've found a Docker image, you can plug it into the "Docker Image" section in Rabix:
 
-    ![](docker_container_section.png)
+    ![](images/docker_container_section.png)
 
 ---
 ## Updating our tool to use Docker
@@ -316,7 +316,7 @@ stdout: alignment.bam
 ]
 ---
 # Part 3: Writing Workflows
-![](workflow.svg)
+![](images/workflow.svg)
 ---
 ## Workflows - Refresher
 
