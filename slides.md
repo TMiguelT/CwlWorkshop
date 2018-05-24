@@ -155,7 +155,10 @@ Follow along with the instructions to make a tool wrapper for `samtools sort`
 ]
 * [Freebayes](https://github.com/ekg/freebayes) is a variant caller, which takes a BAM alignment and determines how this alignment differs from the "normal"
 reference genome
-* Freebayes is called on the command-line as follows: `freebayes --fasta-reference h.sapiens.fasta NA20504.bam`
+* Freebayes is called on the command-line as follows:
+    ```bash
+    freebayes --fasta-reference h.sapiens.fasta NA20504.bam
+    ```
 * Write a new CWL tool wrapper for Freebayes that supports this command
 ]
 
@@ -184,10 +187,16 @@ reference genome
 * Some files, like indexes, are never considered a main input file, but are instead designed to accompany another file,
 for example `.bai` files which accompany `bam` alignments, and `.tbi` indices which accompany `vcf` variant calls.
 * These are called secondary files:
+
+.center[
 ![](images/secondary_file.png)
+]
 ---
 ## JavaScript Expressions
-* Sometimes, some of the values
+* Sometimes, some of the values in our CWL need to be calculated dynamically
+* For example, a command might create an output file whosle nameis based on the input file
+* For example, `gzip file.txt` produces `file.txt.gz`
+* In order to do this, we can embed a JavaScript expression in some CWL fields
 ---
 ## Wrapping Samtools Index
 
