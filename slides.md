@@ -194,9 +194,47 @@ for example `.bai` files which accompany `bam` alignments, and `.tbi` indices wh
 ---
 ## JavaScript Expressions
 * Sometimes, some of the values in our CWL need to be calculated dynamically
-* For example, a command might create an output file whosle nameis based on the input file
+* For example, a command might create an output file whose name is based on the input file
 * For example, `gzip file.txt` produces `file.txt.gz`
 * In order to do this, we can embed a JavaScript expression in some CWL fields
+
+---
+## JavaScript Expressions
+### Syntax
+* `$(...)` denotes a single JavaScript expression that will be evaluated, and the result used for this field
+    * e.g.
+        ```javascript
+        $(1 + 2)
+        ```
+* `${...}` denotes a scope in which functions, variables, loops etc may be used, and a `return` statement is needed
+    to return the final value
+    * e.g.
+        ```javascript
+        ${
+            var x = 1;
+            var y = 2;
+            return x + y;
+        }
+        ```
+* Refer to the [expressions](https://www.commonwl.org/v1.0/CommandLineTool.html#Expressions) section of the CWL spec
+---
+## JavaScript Expressions
+### Variables
+* Within the scope of a JavaScript expression, the following variables are available:
+    * `inputs`: a dictionary of all the inputs provided to this tool. If these inputs have the type
+        [`File`](https://www.commonwl.org/v1.0/CommandLineTool.html#File) or
+        [`Dictionary`](https://www.commonwl.org/v1.0/CommandLineTool.html#Directory), they have special properties
+    * `self`: value depends on the specific context of this expression. e.g. when used in `secondaryFiles`, `self`
+        is set to the main input or output, so that the function can calculate the secondary files for this file
+    * `runtime`:
+        * `runtime.outdir`: an absolute path to the designated output directory
+        * `runtime.tmpdir`: an absolute path to the designated temporary directory
+        * `runtime.cores`: number of CPU cores reserved for the tool process
+        * `runtime.ram`: amount of RAM in mebibytes (2**20) reserved for the tool process
+        * `runtime.outdirSize`: reserved storage space available in the designated output directory
+        * `runtime.tmpdirSize`: reserved storage space available in the designated temporary directory
+
+
 ---
 ## Wrapping Samtools Index
 
