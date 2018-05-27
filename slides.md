@@ -9,7 +9,7 @@ class: content
 ## Motivation
 
 * Most bioinformatics involves running many command-line tools; aligners like `bwa` variant callers like `gatk`, and RNA
-Seq tools like `edgeR`
+Seq tools like `cuffdiff`
 * However, once this list of tools reaches a certain quantity and complexity, it becomes hard to  reproduce exactly what you ran and with what parameters
 * A bash script may help with this, but proper workflows...
 
@@ -355,57 +355,89 @@ stdout: alignment.bam
 ]
 ]
 ---
-## Wrapping VarDict
+## Wrapping Somatic Sniper
 .alert.alert-primary[
 .alert-heading[
 ### Exercise
 ]
-* Use what you've learned about YAML tool definitions to write a tool definition for `VarDictJava`
+* Somatic Sniper is a (bad) somatic variant caller
+* Its command line usage can be found [here](https://github.com/genome/somatic-sniper/blob/master/gmt/documentation.md#usage)
+* Use what you've learned about YAML tool definitions to write a tool definition for `bam-somaticsniper`
+* Note that we want VCF output!
 ]
 ---
 # Part 3: Writing Workflows
 ![](images/workflow.svg)
 ---
-## Workflows - Refresher
-
-* Workflows define how your tools connect to each other to form a data flow
----
 ## Workflows in the Rabix Composer
 
-* In rabix, you add tools to your workflow by dragging and dropping from the sidebar
+* Refresher: workflows define how your tools connect to each other to form a data flow
+* In Rabix, you add tools to your workflow by dragging and dropping from the sidebar
+.center[
+![](images/drag_tool.png)
+]
 * To connect the tools, you then drag a line between input ports and output ports
+.center[
+<video autoplay loop>
+    <source src="images/connect.mp4" type="video/mp4">
+</video>
+]
 ---
-## Exercise - Making an RNA Seq Pipeline in Rabix
+* To specify an input that the user must provide, drag it onto empty space
+.center[
+<video autoplay loop>
+    <source src="images/rabix_workflow_inputs2.mp4" width="518" height="282" type="video/mp4">
+</video>
+]
+* To specify an output that is not used by another tool, drag it onto empty space
+.center[
+<video autoplay loop>
+    <source src="images/rabix_workflow_output2.mp4" width="518" height="282" type="video/mp4">
+</video>
+]
+---
+## Making a Variant Calling Pipeline in Rabix
 .alert.alert-primary[
 .alert-heading[
 ### Exercise
 ]
-* Make a basic workflow that connects `bwa` → `samtools sort` → `samtools index` → `freebayes`
+* Make a basic workflow that connects:
+    * `bwa` → `samtools sort` → `samtools index` → `freebayes`
 ]
 ---
-## Scatter
+## Subworkflows
+* Often when making workflows you will want to encapsulate a whole pipeline of tools and re-use that together
+as a single unit, for example "alignment"
+* To do this, simply make a workflow that encapsulates this functionality, and use as a step in another workflow
+* In the Rabix composer, you can drag workflows onto a workflow in the same way you add tools, however they have this
+logo:
+.fas.fa-share-alt.fa-rotate-180[]
+.center[
+![](images/subworkflow.png)
+]
+
 ---
+# A Tumour-Normal Variant Caller
 .alert.alert-primary[
 .alert-heading[
 ### Exercise
 ]
-* Make a workflow that connects `bwa` → `samtools sort` → `samtools index` → `VarDict`, using scatter
+* First, make an alignment workflow that connects:
+    * `bwa` → `samtools sort` → `samtools index`
+* Next, make a tumour-normal workflow that uses this workflow to align both the tumour and the normal reads, and then
+feeds the alignments into Somatic Sniper
 ]
 
 ---
 ## Workflows in CWL Files
-
+* Like CWL tools, workflows are represented in a YAML format
+* TODO
 ---
 .alert.alert-primary[
 .alert-heading[
 ## Exercise - Manual Workflow
 ]
 * Using YAML, re-implement the basic germline variant calling workflow
+* As before, this should connect:
+    * `bwa` → `samtools sort` → `samtools index` → `freebayes`
 ]
----
-# Part 4: Sharing CWL
-
----
-# References
-* https://openclipart.org/detail/28286/icontool
-* https://github.com/common-workflow-language/logo/blob/master/LICENSE.md
