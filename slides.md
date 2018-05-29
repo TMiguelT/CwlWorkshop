@@ -1,10 +1,64 @@
 layout: true
 class: content
 ---
-# Part 1: Introduction
+# Common Workflow Language for Bioinformatics
+
 .center[
-![](images/cwl.png)
+![](images/cwl_logo.svg)
+### Michael Milton
 ]
+---
+
+.container[
+.row[
+.col-10[
+<img src="images/melbioinf_logo.png" style="height: 100px;">
+]
+.col-2[
+<img src="images/melbioinf_unimelb.png" style="height: 100px;">
+]
+]
+
+.row[
+.col-8.offset-2[
+Providing bioinformatics support for all researchers and students in Melbourne’s biomedical and biosciences precinct.
+]
+]
+<img src="images/melbioinf_capabilities.png" style="width: 100%">
+]
+
+---
+class: center, middle
+
+.center[
+# Part 1: Introduction
+.fa-container[
+.fas.fa-book.fa-10x[]
+]
+]
+---
+## Housekeeping
+* Slides
+    * These slides are hosted at <https://tmiguelt.github.io/CwlWorkshop/index.html>
+    * I recommend you open them in your browser so you can follow along
+* Test Data
+    * The data we will be using to test our workflows is located [here](https://dashboard.rc.nectar.org.au/project/containers/CWL%20Workshop%20Assets/cwl.tar.gz/download).
+    * Please download it now so you have a copy for later
+* Required Tools
+    * Docker
+        * An engine for running tools inside containers
+        * <https://store.docker.com/search?type=edition&offering=community>
+    * Python 3:
+        * Language runtime used by many CWL executors
+        * <https://www.python.org/downloads/>
+    * Rabix Composer:
+        * A graphical CWL editor
+        * <https://github.com/rabix/composer/releases>
+    * cwltool:
+        * A simple CWL executor
+        * <https://github.com/common-workflow-language/cwltool#install>
+
+
 ---
 ## Motivation
 
@@ -30,17 +84,6 @@ Seq tools like `cuffdiff`
     * Are generally project-specific
     * Can be nested inside each other
 ---
-## Tooling for CWL
-* Rabix
-    * <http://rabix.io/>
-    * Is an open source toolkit for creating and running CWL
-    * Its most useful tool is the Rabix Composer - an application for writing CWL tools and workflows graphically
-* Toil
-    * <http://toil.ucsc-cgl.org/>
-    * CWL has a number of "executors" - applications that can actually run CWL
-    * Toil is the best supported executor - it can run workflows on your laptop, on a cluster, on NeCTAR, on AWS, or an a number of other platforms
-    * To install Toil for CWL, run `pip install toil[cwl]`
----
 ## Workshop Goal
 * By the end of the workshop we intend to have a fully-functioning somatic variant calling pipeline
 * This means, it should take sequencing reads, as if from a cancer patient, and determine the DNA mutations that have
@@ -48,10 +91,16 @@ Seq tools like `cuffdiff`
 * Most of the exercises will contribute to this goal, so don't delete what you've written!
 
 ---
-# Part 2: Tools
+
+class: center, middle
+
 .center[
-![](images/tool.png)
+# Part 2: Tools
+.fa-container[
+.fas.fa-wrench.fa-10x[]
 ]
+]
+
 ---
 ## Obtaining Tool Definitions
 
@@ -80,12 +129,12 @@ There are a few useful sources of CWL tool definitions:
 ### Exercise
 ]
 * Try to find a simple wrapper for the tool `bwa mem` from the
-* Download that tool definition, and run it on the provided data with `toil-cwl-runner bwa.cwl` (it should prompt you
-    on how to specify the input files)
-* Save this tool definition - we'll use it in our pipeline later
+* Download that tool definition
+* Run the following command to ensure the tool definition you found is valid under the most recent CWL specification:
+    ```bash
+    cwltool --validate bwa.cwl
+    ```
 ]
-* This didn't do much beyond just running the `bwa` tool
-* However, it did ensure the tool ran in a Docker container with BWA installed
 ---
 ## More on CWL Tools
 
@@ -103,46 +152,69 @@ There are a few useful sources of CWL tool definitions:
 Follow along with the instructions to make a tool wrapper for `samtools sort`
 ]
 ---
-## Exercise - Wrapping BWA
+## Exercise - Wrapping Samtools
 1\. Start by making a new tool definition in Rabix
 
 .center[
 ![](images/rabix_new_tool.png)
 ]
 ---
-## Exercise - Wrapping BWA
+## Exercise - Wrapping Samtools
 2\. Name it after the tool you're wrapping
 
 .center[
 ![](images/rabix_samtools_name.png)
 ]
 ---
-## Exercise - Wrapping BWA
+## Exercise - Wrapping Samtools
 3\. Add the "base command" - the fixed part of the command that will never change
 
 .center[
 ![](images/rabix_samtools_base.png)
 ]
 ---
-## Exercise - Wrapping BWA
+## Exercise - Wrapping Samtools
 
 4\. Define the inputs(s)
 
-.center[
-![](images/rabix_samtools_inputs.png)
+.row[
+.col-8[
+Each input has:
+* A name (`ID`)
+* A type:
+    * `boolean`, `int`, `long`, `float`, `double`, `string`, `File`, or `Directory` for single values
+    * An array of the above types, e.g. `File[]`
+* A way for this input to be used on the command line. Either:
+    * With a numerical `Position` for positional arguments like `gzip some_file`. Here the position is 0 (the first positional argument)
+    * With a `Prefix` for named arguments, e.g. `java -jar something.jar`. Here the input prefix is `-jar`
+
+]
+.col-4[
+![](images/rabix_samtools_input.png)
+]
 ]
 ---
-## Exercise - Wrapping BWA
+## Exercise - Wrapping Samtools
 
 5\. Define the output(s)
 
-.center[
-![](images/rabix_samtools_outputs.png)
+.row[
+.col-8[
+Each output has:
+* A name (`ID`)
+* A type (same as an input)
+* A glob/filepath which indicates how to find this file. In this case, the file is located wherever we piped stdout
+
+]
+.col-4[
+![](images/rabix_samtools_output.png)
+]
 ]
 ---
-## Exercise - Wrapping BWA
+## Exercise - Wrapping Samtools
 
-6\. If the command produces output from stdout, you must specify that in the "Other" section
+6\. If the command produces output from stdout, you need to pipe it to a file so that it can be picked up by the output
+glob
 
 .center[
 ![](images/rabix_samtools_other.png)
@@ -182,26 +254,73 @@ reference genome
 * Once you have found the right images, plug them into the "Docker Image" section
 ]
 
+Now that we have a way to find the actual tools, we can start actually running CWL...
+
+---
+## Running Tools
+.alert.alert-primary[
+.alert-heading[
+### Exercise
+]
+* Run your bwa tool using:
+    ```bash
+    cwltool /path/to/bwa.cwl
+    ```
+* `cwltool` should prompt you to select its input files.
+* Choose a pair of reads and reference file we downloaded at the start of this workshop
+]
+
+
 ---
 ## Secondary Files
-* Some files, like indexes, are never considered a main input file, but are instead designed to accompany another file,
+* Some files, like indexes, are never considered a main file, but are instead designed to accompany another file,
 for example `.bai` files which accompany `bam` alignments, and `.tbi` indices which accompany `vcf` variant calls.
 * These are called secondary files:
 
 .center[
 ![](images/secondary_file.png)
 ]
+* Secondary files can accompany both input and output files
 ---
-## JavaScript Expressions
+## Dynamic Expressions
 * Sometimes, some of the values in our CWL need to be calculated dynamically
 * For example, a command might create an output file whose name is based on the input file
 * For example, `gzip file.txt` produces `file.txt.gz`
-* In order to do this, we can embed a JavaScript expression in some CWL fields
+* In order to do this, we can embed an expression in some CWL fields
 
 ---
-## JavaScript Expressions
-### Syntax
-* `$(...)` denotes a single JavaScript expression that will be evaluated, and the result used for this field
+## Dynamic Expressions
+### Parameter References
+* The most basic expressions you can use are called ['Parameter References'](https://www.commonwl.org/v1.0/CommandLineTool.html#Parameter_references)
+* These consist of an expression in this form: `$(...)`
+* For instance, `$(inputs.extractfile)`
+---
+## Dynamic Expressions
+### Variables
+* Within the scope of an expression, the following variables are available:
+    * `inputs`: a dictionary of all the inputs provided to this tool. If these inputs have the type
+        [`File`](https://www.commonwl.org/v1.0/CommandLineTool.html#File) or
+        [`Dictionary`](https://www.commonwl.org/v1.0/CommandLineTool.html#Directory), they have special properties
+    * `self`: value depends on the specific context of this expression. e.g. when used in `secondaryFiles`, `self`
+        is set to the main input or output, so that the function can calculate the secondary files for this file
+    * `runtime`:
+        * `runtime.outdir`: an absolute path to the designated output directory
+        * `runtime.tmpdir`: an absolute path to the designated temporary directory
+        * `runtime.cores`: number of CPU cores reserved for the tool process
+        * `runtime.ram`: amount of RAM in mebibytes (2**20) reserved for the tool process
+        * `runtime.outdirSize`: reserved storage space available in the designated output directory
+        * `runtime.tmpdirSize`: reserved storage space available in the designated temporary directory
+---
+## Dynamic Expressions
+### JavaScript Expressions
+* If you enable JavaScript expressions with the following line, you can use JavaScript in your expressions for even more
+power:
+    ```yaml
+    requirements:
+      - class: InlineJavascriptRequirement
+    ```
+* The `$(...)` syntax is upgraded into a JavaScript expression, which has all the same abilities as a parameter reference,
+but can now calculate values:
     * e.g.
         ```javascript
         $(1 + 2)
@@ -218,27 +337,8 @@ for example `.bai` files which accompany `bam` alignments, and `.tbi` indices wh
         ```
 * Refer to the [expressions](https://www.commonwl.org/v1.0/CommandLineTool.html#Expressions) section of the CWL spec
 ---
-## JavaScript Expressions
-### Variables
-* Within the scope of a JavaScript expression, the following variables are available:
-    * `inputs`: a dictionary of all the inputs provided to this tool. If these inputs have the type
-        [`File`](https://www.commonwl.org/v1.0/CommandLineTool.html#File) or
-        [`Dictionary`](https://www.commonwl.org/v1.0/CommandLineTool.html#Directory), they have special properties
-    * `self`: value depends on the specific context of this expression. e.g. when used in `secondaryFiles`, `self`
-        is set to the main input or output, so that the function can calculate the secondary files for this file
-    * `runtime`:
-        * `runtime.outdir`: an absolute path to the designated output directory
-        * `runtime.tmpdir`: an absolute path to the designated temporary directory
-        * `runtime.cores`: number of CPU cores reserved for the tool process
-        * `runtime.ram`: amount of RAM in mebibytes (2**20) reserved for the tool process
-        * `runtime.outdirSize`: reserved storage space available in the designated output directory
-        * `runtime.tmpdirSize`: reserved storage space available in the designated temporary directory
-
-
----
 ## Wrapping Samtools Index
 
-* Next, we need to wrap `samtools` - a utility for working with alignment files
 .alert.alert-primary[
 .alert-heading[
 ### Exercise
@@ -366,8 +466,14 @@ stdout: alignment.bam
 * Note that we want VCF output!
 ]
 ---
+class: center, middle
+
+.center[
 # Part 3: Writing Workflows
-![](images/workflow.svg)
+.fa-container[
+.fas.fa-share-alt-square.fa-10x[]
+]
+]
 ---
 ## Workflows in the Rabix Composer
 
@@ -378,20 +484,20 @@ stdout: alignment.bam
 ]
 * To connect the tools, you then drag a line between input ports and output ports
 .center[
-<video autoplay loop>
+<video controls autoplay loop>
     <source src="images/connect.mp4" type="video/mp4">
 </video>
 ]
 ---
 * To specify an input that the user must provide, drag it onto empty space
 .center[
-<video autoplay loop>
+<video controls autoplay loop>
     <source src="images/rabix_workflow_inputs2.mp4" width="518" height="282" type="video/mp4">
 </video>
 ]
 * To specify an output that is not used by another tool, drag it onto empty space
 .center[
-<video autoplay loop>
+<video controls autoplay loop>
     <source src="images/rabix_workflow_output2.mp4" width="518" height="282" type="video/mp4">
 </video>
 ]
