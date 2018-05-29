@@ -42,7 +42,7 @@ class: center, middle
     * These slides are hosted at <https://tmiguelt.github.io/CwlWorkshop/index.html>
     * I recommend you open them in your browser so you can follow along
 * Test Data
-    * The data we will be using to test our workflows is located [here](https://dashboard.rc.nectar.org.au/project/containers/CWL%20Workshop%20Assets/cwl.tar.gz/download).
+    * The data we will be using to test our workflows is located [here](https://swift.rc.nectar.org.au:8888/v1/AUTH_7ea859948c3a451c9baced6fee813ed1/CWL%20Workshop%20Assets/cwl.tar.gz).
     * Please download it now so you have a copy for later
 * Required Tools
     * Docker
