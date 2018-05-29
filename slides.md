@@ -37,29 +37,6 @@ class: center, middle
 ]
 ]
 ---
-## Housekeeping
-* Slides
-    * These slides are hosted at <https://tmiguelt.github.io/CwlWorkshop/index.html>
-    * I recommend you open them in your browser so you can follow along
-* Test Data
-    * The data we will be using to test our workflows is located [here](https://swift.rc.nectar.org.au:8888/v1/AUTH_7ea859948c3a451c9baced6fee813ed1/CWL%20Workshop%20Assets/cwl.tar.gz).
-    * Please download it now so you have a copy for later
-* Required Tools
-    * Docker
-        * An engine for running tools inside containers
-        * <https://store.docker.com/search?type=edition&offering=community>
-    * Python 3:
-        * Language runtime used by many CWL executors
-        * <https://www.python.org/downloads/>
-    * Rabix Composer:
-        * A graphical CWL editor
-        * <https://github.com/rabix/composer/releases>
-    * cwltool:
-        * A simple CWL executor
-        * <https://github.com/common-workflow-language/cwltool#install>
-
-
----
 ## Motivation
 
 * Most bioinformatics involves running many command-line tools; aligners like `bwa` variant callers like `gatk`, and RNA
@@ -73,23 +50,31 @@ Seq tools like `cuffdiff`
     * Save you having to hard-code input parameters and temporary files
     * Are much more readable than bash
 ---
+## Housekeeping
+* Slides
+    * These slides are hosted at <https://tinyurl.com/ycenoxbf>
+    * I recommend you open them in your browser so you can follow along
+* Downloads for Part 1:
+    * Rabix Composer:
+        * A graphical CWL editor
+        * Absolutely essential for the first part of this workshop
+        * <https://github.com/rabix/composer/releases>
+    * Test Data
+        * The data we will be using to test our workflows is located [here](https://swift.rc.nectar.org.au:8888/v1/AUTH_7ea859948c3a451c9baced6fee813ed1/CWL%20Workshop%20Assets/cwl.tar.gz).
+        * Please download it now so you have a copy for later
+    * Docker
+        * An engine for running tools inside containers
+        * <https://store.docker.com/search?type=edition&offering=community>
+---
 ## CWL Structure
-* Tools
-    * Are wrappers that describe to the CWL engine how a tool works
-    * Include its inputs and outputs, and their format
-    * Any given tool can have a "correct" tool definition, unlike a workflow
-    * Some already exist for commonly used tools
-* Workflows
+* Tools .fas.fa-wrench[]
+    * Are wrappers that describe to the CWL engine how a command-line tool works
+    * List its inputs and outputs, and the command to produce one from the other
+    * Aren't workflow-specific, so some already exist for commonly used tools
+* Workflows .fas.fa-share-alt[]
     * Explain how tools are connected to each other and in what order
     * Are generally project-specific
     * Can be nested inside each other
----
-## Workshop Goal
-* By the end of the workshop we intend to have a fully-functioning somatic variant calling pipeline
-* This means, it should take sequencing reads, as if from a cancer patient, and determine the DNA mutations that have
-    occurred in their tumour
-* Most of the exercises will contribute to this goal, so don't delete what you've written!
-
 ---
 
 class: center, middle
@@ -108,7 +93,10 @@ There are a few useful sources of CWL tool definitions:
 * Dockstore
     * <https://dockstore.org>
     * Dockstore - a database of CWL and WDL workflows and tools
-    * Once you find a tool definition you like, click "Files" → "Descriptor Files" → Download
+    * Once you find a tool definition you like, click:
+        * "Files" → "Descriptor Files" → Download
+    * Unfortunately many of these definitions are out of date...
+
 .center[
 ![](images/dockstore_circled.png)
 ]
@@ -118,33 +106,29 @@ There are a few useful sources of CWL tool definitions:
 There are a few useful sources of CWL tool definitions:
 * Official CWL Workflows Repository
     * <https://github.com/common-workflow-language/workflows>
-    * Once you find a tool definition you like, right-click on the "Raw" button and click "Save link as" section
-.center[
-![](images/workflow_repo.png)
-]
+    * If you clone the entire repo, it will provide a useful library of tool definitions:
+    ```bash
+    git clone https://github.com/common-workflow-language/workflows
+    ```
 ---
 ## Obtaining Tool Definitions
 .alert.alert-primary[
 .alert-heading[
 ### Exercise
 ]
-* Try to find a simple wrapper for the tool `bwa mem` from the
-* Download that tool definition
-* Run the following command to ensure the tool definition you found is valid under the most recent CWL specification:
-    ```bash
-    cwltool --validate bwa.cwl
-    ```
+.row[
+.col-8[
+* Clone the CWL Workflows repo
+* Open the repo in the Rabix Composer
+* Find and open the tool definition for `bwa mem` to ensure it's valid
+]
+.col-4[
+![](images/rabix_open_project.png)
+]
+]
 ]
 ---
-## More on CWL Tools
-
-* At minimum, a CWL tool definition must have three things
-    * A command (to to run
-    * A list of inputs (command line arguments and stdin)
-    * A list of outputs (files and stdout)
-* We will investigate how to make these tool definitions first using Rabix, and then from scratch
----
-# Wrapping Samtools
+## Wrapping Samtools
 .alert.alert-primary[
 .alert-heading[
 ### Exercise
@@ -152,28 +136,45 @@ There are a few useful sources of CWL tool definitions:
 Follow along with the instructions to make a tool wrapper for `samtools sort`
 ]
 ---
-## Exercise - Wrapping Samtools
+## Wrapping Samtools
 1\. Start by making a new tool definition in Rabix
 
 .center[
 ![](images/rabix_new_tool.png)
 ]
 ---
-## Exercise - Wrapping Samtools
+## Wrapping Samtools
 2\. Name it after the tool you're wrapping
 
 .center[
 ![](images/rabix_samtools_name.png)
 ]
 ---
-## Exercise - Wrapping Samtools
+## Wrapping Samtools
+.row[
+.col-9[
+<img src="images/rabix_samtools_overview2.png" style="width: 550px">
+]
+.col-3[
+* The main sections we will focus on are:
+    * Base Command
+    * Input Ports
+    * Output Ports
+    * Other
+* Feel free to collapse the other sections
+* Ignore the Arguments section
+]
+]
+---
+## Wrapping Samtools
 3\. Add the "base command" - the fixed part of the command that will never change
 
+* Make sure that each part of the command is on a new line
 .center[
 ![](images/rabix_samtools_base.png)
 ]
 ---
-## Exercise - Wrapping Samtools
+## Wrapping Samtools
 
 4\. Define the inputs(s)
 
@@ -194,7 +195,7 @@ Each input has:
 ]
 ]
 ---
-## Exercise - Wrapping Samtools
+## Wrapping Samtools
 
 5\. Define the output(s)
 
@@ -211,7 +212,7 @@ Each output has:
 ]
 ]
 ---
-## Exercise - Wrapping Samtools
+## Wrapping Samtools
 
 6\. If the command produces output from stdout, you need to pipe it to a file so that it can be picked up by the output
 glob
@@ -240,6 +241,7 @@ reference genome
 * For this we can use Docker
 * Docker images are tiny virtual machines that have applications pre-installed inside of them
 * You can find docker images of many common bioinformatics tools in [Biocontainers](https://biocontainers.pro/registry/)
+* Those that aren't on Biocontainers can probably be found by searching [Docker Store](https://store.docker.com/)
 * Once you've found a Docker image, you can plug it into the "Docker Image" section in Rabix:
 
     ![](images/docker_container_section.png)
@@ -262,12 +264,15 @@ Now that we have a way to find the actual tools, we can start actually running C
 .alert-heading[
 ### Exercise
 ]
-* Run your bwa tool using:
-    ```bash
-    cwltool /path/to/bwa.cwl
-    ```
-* `cwltool` should prompt you to select its input files.
-* Choose a pair of reads and reference file we downloaded at the start of this workshop
+
+* Open the Test tab for the BWA tool
+* Double click each input bubble and browse for the appropriate file we downloaded at the start of this workshop
+* Make sure you add all the fasta indexes as secondary files for the fasta reference
+
+.center[
+![](images/rabix_bwa_test.png)
+]
+
 ]
 
 
@@ -281,6 +286,8 @@ for example `.bai` files which accompany `bam` alignments, and `.tbi` indices wh
 ![](images/secondary_file.png)
 ]
 * Secondary files can accompany both input and output files
+* The simplest way to specify secondary files is as a string that will be appended onto the main file
+* For example `.bai` means `main_file.bam.bai` is the secondary file name
 ---
 ## Dynamic Expressions
 * Sometimes, some of the values in our CWL need to be calculated dynamically
@@ -291,9 +298,11 @@ for example `.bai` files which accompany `bam` alignments, and `.tbi` indices wh
 ---
 ## Dynamic Expressions
 ### Parameter References
-* The most basic expressions you can use are called ['Parameter References'](https://www.commonwl.org/v1.0/CommandLineTool.html#Parameter_references)
+* The most basic expressions you can use are called [Parameter References](https://www.commonwl.org/v1.0/CommandLineTool.html#Parameter_references)
 * These consist of an expression in this form: `$(...)`
 * For instance, `$(inputs.extractfile)`
+* These use a subset of JavaScript syntax that allows for property access and nothing else
+* You can use multiple `$(...)` expressions within the one string
 ---
 ## Dynamic Expressions
 ### Variables
@@ -345,7 +354,11 @@ but can now calculate values:
 ]
 * Use what you have learned from wrapping `bwa` to make a wrapper for the `samtools index` subcommand
 * You can find the samtools manual, including all command-line flags for `samtools index` here: <http://www.htslib.org/doc/samtools.html#COMMANDS_AND_OPTIONS>
-* The output from `samtools index` will be a BAM file, with its `.bai` index as a secondary file
+* The output from `samtools index` will be the same BAM file that was input, but with its `.bai` index as a secondary file
+    * This means your output file Glob will use an expression to find the input filename
+    * Hint: `$(input.INPUTNAME.basename)` will return the full path to the input named `INPUTNAME`
+    * In addition, to grant access to this file, you need to add `$(input.INPUTNAME)` as an expression in the File Requirements
+    section
 ]
 ---
 ## Tool YAML
@@ -624,3 +637,14 @@ steps:
 * As before, this should connect:
     * `bwa` → `samtools sort` → `samtools index` → `freebayes`
 ]
+---
+
+* Downloads for Part 2:
+    * cwltool:
+        * A simple CWL executor
+        * <https://github.com/common-workflow-language/cwltool#install>
+    * Python 3:
+        * Language runtime used by many CWL executors
+        * <https://www.python.org/downloads/>
+
+

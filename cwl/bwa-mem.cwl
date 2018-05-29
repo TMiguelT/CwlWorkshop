@@ -1,34 +1,29 @@
-#!/usr/bin/env cwl-runner
-
-cwlVersion: v1.0
 class: CommandLineTool
-
+cwlVersion: v1.0
+$namespaces:
+  sbg: 'https://www.sevenbridges.com'
+baseCommand:
+  - bwa
+  - mem
 inputs:
-
-  reference:
-    type: File
-    secondaryFiles:
-        - .amb
-        - .ann
-        - .bwt
-        - .pac
-        - .sa
-    inputBinding:
-      position: 0
-
-  reads:
-    type:
-      type: array
-      items: File
+  - id: reads
+    type: 'File[]'
     inputBinding:
       position: 1
-
+  - id: reference
+    type: File
+    inputBinding:
+      position: 0
+    secondaryFiles:
+      - .amb
+      - .ann
+      - .bwt
+      - .pac
+      - .sa
 outputs:
-  alignment:
+  - id: alignment
     type: stdout
-
+requirements:
+  - class: DockerRequirement
+    dockerPull: biocontainers/bwa
 stdout: output.bam
-
-baseCommand:
-- bwa
-- mem

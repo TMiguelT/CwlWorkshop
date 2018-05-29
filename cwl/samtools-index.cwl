@@ -1,24 +1,26 @@
-#!/usr/bin/env cwl-runner
-
-cwlVersion: v1.0
 class: CommandLineTool
-
+cwlVersion: v1.0
+$namespaces:
+  sbg: 'https://www.sevenbridges.com'
+baseCommand:
+  - samtools
+  - index
 inputs:
-  alignment:
+  - id: alignment
     type: File
     inputBinding:
-      position: 2
-      valueFrom: $(self.basename)
+      position: 0
     label: Input bam file
-
-baseCommand: [samtools, index, -b]
-
 outputs:
-  alignment_with_index:
+  - id: alignment_with_index
+    doc: The index file
     type: File
-    secondaryFiles: .bai
     outputBinding:
       glob: $(inputs.alignment.basename)
-    doc: The index file
-
-
+    secondaryFiles:
+      - .bai
+requirements:
+  - class: InitialWorkDirRequirement
+    listing:
+      - $(inputs.alignment)
+  - class: InlineJavascriptRequirement
