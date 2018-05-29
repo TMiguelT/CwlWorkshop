@@ -431,7 +431,84 @@ feeds the alignments into Somatic Sniper
 ---
 ## Workflows in CWL Files
 * Like CWL tools, workflows are represented in a YAML format
-* TODO
+
+.row[
+.col-sm[
+```yaml
+cwlVersion: v1.0
+class: Workflow
+inputs:
+  inp: File
+  ex: string
+
+outputs:
+  classout:
+    type: File
+    outputSource: compile/classfile
+```
+]
+.col-sm[
+```yaml
+steps:
+  untar:
+    run: tar-param.cwl
+    in:
+      tarfile: inp
+      extractfile: ex
+    out: [example_out]
+
+  compile:
+    run: arguments.cwl
+    in:
+      src: untar/example_out
+    out: [classfile]
+```
+]
+]
+---
+* All workflows have the class "Workflow"
+    ```yml
+    class: Workflow
+    ```
+* The workflow needs a list of inputs, which will then feed into the tools:
+    ```yaml
+    inputs:
+      inp: File
+      ex: string
+    ```
+
+* We also pick certain outputs from the tools in this workflow to use as workflow outputs.
+    For this, we use the format `outputSource: step_name/output_name`
+    ```yaml
+    outputs:
+      classout:
+        type: File
+        outputSource: compile/classfile
+    ```
+---
+* The `steps` section is a dictionary of `step_name: step_body` which contains the body of the workflow
+* Each step has:
+    * A name:
+    ```yaml
+      compile:
+    ```
+
+    * A workflow or tool to run for this stage
+    ```yaml
+        run: arguments.cwl
+    ```
+
+    * A list of inputs with a source for each.
+    ```yaml
+        in:
+          src: untar/example_out
+    ```
+    In this case, the `src` parameter is provided by the `example_out` parameter of the step named `untar`
+
+    * A list of outputs we intend to use in the wider workflow
+    ```yaml
+        out: [classfile]
+    ```
 ---
 .alert.alert-primary[
 .alert-heading[

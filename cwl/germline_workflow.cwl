@@ -19,7 +19,7 @@ outputs:
     type: File
 
 steps:
-  - id: bwa
+  bwa:
     in:
       output_filename:
         valueFrom: 'alignment.bam'
@@ -29,21 +29,21 @@ steps:
       - alignment
     run: bwa-mem.cwl
 
-  - id: sort
+  sort:
     in:
       alignment: bwa/alignment
     out:
       - sorted_alignment
     run: samtools-sort.cwl
 
-  - id: index
+  index:
     in:
       alignments: sort/sorted_alignment
     out:
       - alignments_with_index
     run: samtools-index.cwl
 
-  - id: freebayes
+  freebayes:
     in:
       reference: reference
       bam: index/alignments_with_index
