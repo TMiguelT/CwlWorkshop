@@ -635,6 +635,10 @@ stdout: sorted_output.bam
       - samtools
       - sort
       ```
+* The docker image
+requirements:
+  - class: DockerRequirement
+    dockerPull: maxulysse/freebayes
 ---
 ## Tool YAML
 
@@ -713,19 +717,76 @@ concise
     ```
 ]
 ]
-
 ---
+## Stdout Type
+* So far when we've wanted to capture the stdout of a tool, we have piped it to a file and then captured that output file
+* CWL has a much neater way of doing this - you simply set an output's type to `stdout`
+* This simplifies this code:
+    ```yaml
+    outputs:
+      an_output_name:
+        type: File
+        outputBinding:
+          glob: a_stdout_file
 
+    stdout: a_stdout_file
+    ```
+* To this
+    ```yaml
+    outputs:
+      an_output_name:
+        type: stdout
+    ```
+* In addition, this allows CWL to stream outputs between stages, instead of saving them to the filesystem first
 ---
-## Wrapping Somatic Sniper
+## Using the `stdout` Type
 .alert.alert-primary[
 .alert-heading[
 ### Exercise
 ]
-* Somatic Sniper is a (bad) somatic variant caller
-* Its command line usage can be found [here](https://github.com/genome/somatic-sniper/blob/master/gmt/documentation.md#usage)
-* Use what you've learned about YAML tool definitions to write a tool definition for `bam-somaticsniper`
-* Note that we want VCF output!
+* Edit your `samtools sort` and `freebayes` tools to use the `stdout` type
+* Edit these files using your text editor only, without the Rabix Composer
+]
+---
+## Using the `stdout` Type
+.alert.alert-success[
+.alert-heading[
+### Answer
+]
+* Your answer for `samtools sort` should look a bit like this:
+    ```yaml
+    class: CommandLineTool
+
+    cwlVersion: v1.0
+
+    baseCommand:
+      - samtools
+      - sort
+
+    inputs:
+      - id: alignment
+        type: File
+        inputBinding:
+          position: 0
+
+    outputs:
+      - id: sorted_alignment
+        type: stdout
+    ```
+]
+---
+## Wrapping Cutadapt (by hand!)
+.alert.alert-primary[
+.alert-heading[
+### Exercise
+]
+* We have a working germline pipeline, but it doesn't filter out bad quality reads!
+* For this we need to add a read trimmer like `cutadapt`
+* Cutadapt is invoked like this (`q` is a quality cutoff):
+    ```bash
+    cutadapt -q 10 input.fastq > output.fastq
+    ```
+* Using a text editor, write a tool definition from scratch for `cutadapt`
 ]
 
 ---

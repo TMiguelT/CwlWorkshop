@@ -20,6 +20,8 @@ outputs:
     secondaryFiles:
       - .bai
 requirements:
+  - class: DockerRequirement
+    dockerPull: biocontainers/samtools
   - class: InitialWorkDirRequirement
     listing:
       - $(inputs.alignment)

@@ -14,11 +14,7 @@ inputs:
 
 outputs:
   - id: sorted_alignment
-    type: File
-    outputBinding:
-      glob: sorted_alignment.bam
-
-stdout: sorted_alignment.bam
+    type: stdout
 
 requirements:
   - class: DockerRequirement
