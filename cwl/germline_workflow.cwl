@@ -32,14 +32,6 @@ steps:
       - id: alignment
     run: ./bwa-mem.cwl
 
-  - id: samtools_index
-    in:
-      - id: alignment
-        source: samtools_sort/sorted_alignment
-    out:
-      - id: alignment_with_index
-    run: ./samtools-index.cwl
-
   - id: samtools_sort
     in:
       - id: alignment
@@ -47,6 +39,14 @@ steps:
     out:
       - id: sorted_alignment
     run: ./samtools-sort.cwl
+
+  - id: samtools_index
+    in:
+      - id: alignment
+        source: samtools_sort/sorted_alignment
+    out:
+      - id: alignment_with_index
+    run: ./samtools-index.cwl
 
   - id: freebayes
     in:

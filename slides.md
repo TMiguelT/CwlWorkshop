@@ -139,7 +139,7 @@ There are a few useful sources of CWL tool definitions:
 .alert-heading[
 ### Answer
 ]
-* [Download link](cwl/bwa-mem.cwl)
+* [`bwa-mem.cwl`](cwl/bwa-mem.cwl)
 ]
 
 
@@ -262,7 +262,7 @@ samtools sort /path/to/input.ext > sorted_alignment.bam
 .alert-heading[
 ### Answer
 ]
-* If you weren't able to get samtools to work, you can download a tool definition [here](cwl/samtools-sort.cwl)
+* [`samtools-sort.cwl`](cwl/samtools-sort.cwl)
 ]
 
 ---
@@ -288,7 +288,7 @@ freebayes /path/to/input.ext --fasta-reference /path/to/input.ext > variants.vcf
 .alert-heading[
 ### Answer
 ]
-* [Tool definition](cwl/freebayes.cwl)
+* [`freebayes.cwl`](cwl/freebayes.cwl)
 ]
 
 ---
@@ -320,9 +320,9 @@ freebayes /path/to/input.ext --fasta-reference /path/to/input.ext > variants.vcf
 ### Answers
 ]
 * Here are some completed tool definitions:
-    * [bwa](cwl/bwa-mem.cwl)
-    * [samtools sort](cwl/samtools-sort.cwl)
-    * [freebayes](cwl/freebayes.cwl)
+    * [`bwa.cwl`](cwl/bwa-mem.cwl)
+    * [`samtools-sort.cwl`](cwl/samtools-sort.cwl)
+    * [`freebayes.cwl`](cwl/freebayes.cwl)
 ]
 
 
@@ -382,7 +382,7 @@ for example:
 .alert-heading[
 ### Answers
 ]
-* [Freebayes tool definition](cwl/freebayes.cwl)
+* [`freebayes.cwl`](cwl/freebayes.cwl)
 ]
 
 
@@ -482,7 +482,7 @@ but can now calculate values:
 .alert-heading[
 ### Answer
 ]
-* [`samtools index`](cwl/samtools-index.cwl)
+* [`samtools-index.cwl`](cwl/samtools-index.cwl)
 ]
 
 ---
@@ -541,7 +541,7 @@ class: center, middle
 ]
 * You should have workflow a bit like this:
 <img src="images/germline_workflow.png" style="width: 100%">
-* [Download link](cwl/germline_workflow.cwl)
+* [`germline_workflow.cwl`](cwl/germline_workflow.cwl)
 ]
 ---
 ## Subworkflows
@@ -576,7 +576,7 @@ feeds the alignments into Somatic Sniper:
 ]
 * Your alignment workflow should look like this
 <img src="images/alignment_workflow.png" style="width: 100%">
-* [Download link](cwl/alignment_workflow.cwl)
+* [`alignment_workflow.cwl`](cwl/alignment_workflow.cwl)
 ]
 ---
 # A Tumour-Normal Variant Caller
@@ -586,7 +586,7 @@ feeds the alignments into Somatic Sniper:
 ]
 * And your somatic workflow should look like this:
 <img src="images/somatic_workflow.png" style="height: 90%">
-* [Download link](cwl/somatic_workflow.cwl)
+* [`somatic_workflow.cwl`](cwl/somatic_workflow.cwl)
 ]
 ---
 class: center, middle
@@ -829,7 +829,6 @@ concise
 ### Answer
 ]
 * Your answer for `samtools sort` should look a bit like this:
-* You can download this definition [here](cwl/samtools-sort-stdout.cwl)
     ```yaml
     class: CommandLineTool
     cwlVersion: v1.0
@@ -848,6 +847,7 @@ concise
       - id: sorted_alignment
         type: stdout
     ```
+* [`samtools-sort-stdout.cwl`](cwl/samtools-sort-stdout.cwl)
 ]
 ---
 ## Wrapping Cutadapt (by hand!)
@@ -868,7 +868,7 @@ concise
 .alert.alert-success[
 .alert-heading[
 ### Answer
-* You can download this file from [here](cwl/cutadapt.cwl)
+* [`cutadapt.cwl`](cwl/cutadapt.cwl)
 ]
 .row[
 .col-6[
@@ -942,7 +942,7 @@ outputs:
 ### Answer
 ]
 
-* [Download link](cwl/cutadapt-paired.cwl)
+* [`cutadapt-paired.cwl`](cwl/cutadapt-paired.cwl)
 
 .row[
 .col-6[
@@ -1093,6 +1093,13 @@ steps:
           - .sa
     ```
 
+]
+---
+.alert.alert-success[
+.alert-heading[
+### Answer
+]
+* [`germline_workflow_cutadapt.cwl`](cwl/germline_workflow_cutadapt.cwl)
 ]
 ---
 .alert.alert-primary[
