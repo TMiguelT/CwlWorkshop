@@ -134,6 +134,15 @@ There are a few useful sources of CWL tool definitions:
 ]
 ]
 ]
+--
+.alert.alert-success[
+.alert-heading[
+### Answer
+]
+* [Download link](cwl/bwa-mem.cwl)
+]
+
+
 ---
 ## Rabix Tool Overview
 .center[
@@ -144,7 +153,7 @@ There are a few useful sources of CWL tool definitions:
 * **Docker Image** defines an optional image in which to run this tool
 * **The Base Command** defines what command line tool to run
     ![](images/bwa_basecommand.png)
-* **Arguments** are confusingly named - they won't be needed at all for today's workshop. Don't confuse this with **Input Ports**
+* **Arguments** are confusingly named - they won't be needed for a while. Don't confuse this with **Input Ports**
 * The **Command Line** at the bottom builds up a bash command that should correspond to the tool you're wrapping
 ---
 ## Rabix Overview
@@ -246,6 +255,16 @@ samtools sort /path/to/input.ext > sorted_alignment.bam
 8\. Save your tool definition
 
 ![](images/rabix_save.png)
+
+--
+
+.alert.alert-success[
+.alert-heading[
+### Answer
+]
+* If you weren't able to get samtools to work, you can download a tool definition [here](cwl/samtools-sort.cwl)
+]
+
 ---
 ## Wrapping Freebayes
 .alert.alert-primary[
@@ -263,6 +282,13 @@ reference genome
 ```bash
 freebayes /path/to/input.ext --fasta-reference /path/to/input.ext > variants.vcf
 ```
+]
+--
+.alert.alert-success[
+.alert-heading[
+### Answer
+]
+* [Tool definition](cwl/freebayes.cwl)
 ]
 
 ---
@@ -286,6 +312,19 @@ freebayes /path/to/input.ext --fasta-reference /path/to/input.ext > variants.vcf
 * Find an appropriate Docker image for `bwa`, `samtools sort` and `freebayes`, using Biocontainers
 * Once you have found the right images, plug them into the "Docker Image" section
 ]
+
+--
+
+.alert.alert-success[
+.alert-heading[
+### Answers
+]
+* Here are some completed tool definitions:
+    * [bwa](cwl/bwa-mem.cwl)
+    * [samtools sort](cwl/samtools-sort.cwl)
+    * [freebayes](cwl/freebayes.cwl)
+]
+
 
 Now that we have a way to find the actual tools, we can start actually running CWL...
 
@@ -338,6 +377,14 @@ for example:
 * Freebayes also requires that the reference genome has a `.fai` index
 * Edit your Freebayes tool definition to include these indexes
 ]
+--
+.alert.alert-success[
+.alert-heading[
+### Answers
+]
+* [Freebayes tool definition](cwl/freebayes.cwl)
+]
+
 
 ---
 ## Dynamic Expressions
@@ -429,6 +476,15 @@ but can now calculate values:
     in the File Requirements section
 ]
 
+--
+
+.alert.alert-success[
+.alert-heading[
+### Answer
+]
+* [`samtools index`](cwl/samtools-index.cwl)
+]
+
 ---
 class: center, middle
 
@@ -485,6 +541,7 @@ class: center, middle
 ]
 * You should have workflow a bit like this:
 <img src="images/germline_workflow.png" style="width: 100%">
+* [Download link](cwl/germline_workflow.cwl)
 ]
 ---
 ## Subworkflows
@@ -519,6 +576,7 @@ feeds the alignments into Somatic Sniper:
 ]
 * Your alignment workflow should look like this
 <img src="images/alignment_workflow.png" style="width: 100%">
+* [Download link](cwl/alignment_workflow.cwl)
 ]
 ---
 # A Tumour-Normal Variant Caller
@@ -528,6 +586,7 @@ feeds the alignments into Somatic Sniper:
 ]
 * And your somatic workflow should look like this:
 <img src="images/somatic_workflow.png" style="height: 90%">
+* [Download link](cwl/somatic_workflow.cwl)
 ]
 ---
 class: center, middle
@@ -549,6 +608,19 @@ class: center, middle
 * Some text editor
     * Your system editor is probably fine
     * If not, I recommend Atom: <https://atom.io/>
+---
+## CWLTool
+* `cwltool` is the reference CWL runner
+* It can do many things with CWL, including validate and run it on the command line
+* To validate a tool or workflow definition, open a terminal and type:
+    ```bash
+    cwltool --validate /path/to/tool.cwl
+    ```
+* To run a tool or workflow, use:
+    ```bash
+    cwltool /path/to/tool.cwl --input-name value --another-input value
+    ```
+* This will be helpful later on!
 ---
 ## YAML Format
 
@@ -636,9 +708,11 @@ stdout: sorted_output.bam
       - sort
       ```
 * The docker image
-requirements:
-  - class: DockerRequirement
-    dockerPull: maxulysse/freebayes
+    ```yaml
+    requirements:
+      - class: DockerRequirement
+        dockerPull: biocontainers/samtools
+    ```
 ---
 ## Tool YAML
 
@@ -746,6 +820,7 @@ concise
 ]
 * Edit your `samtools sort` and `freebayes` tools to use the `stdout` type
 * Edit these files using your text editor only, without the Rabix Composer
+* Once you've finished, test your files with `cwltool --validate`
 ]
 ---
 ## Using the `stdout` Type
@@ -754,9 +829,9 @@ concise
 ### Answer
 ]
 * Your answer for `samtools sort` should look a bit like this:
+* You can download this definition [here](cwl/samtools-sort-stdout.cwl)
     ```yaml
     class: CommandLineTool
-
     cwlVersion: v1.0
 
     baseCommand:
@@ -782,13 +857,136 @@ concise
 ]
 * We have a working germline pipeline, but it doesn't filter out bad quality reads!
 * For this we need to add a read trimmer like `cutadapt`
-* Cutadapt is invoked like this (`q` is a quality cutoff):
-    ```bash
-    cutadapt -q 10 input.fastq > output.fastq
+* Cutadapt is invoked like this (`q` is the quality cutoff)
+   ```bash
+   cutadapt -q 10 input.fastq > output.fastq`
+   ```
+* Write a tool definition for `cutadapt` by hand
+]
+---
+## Wrapping Cutadapt (by hand!)
+.alert.alert-success[
+.alert-heading[
+### Answer
+* You can download this file from [here](cwl/cutadapt.cwl)
+]
+.row[
+.col-6[
+```yaml
+class: CommandLineTool
+cwlVersion: v1.0
+
+baseCommand:
+  - cutadapt
+
+requirements:
+  - class: DockerRequirement
+    dockerPull: quay.io/biocontainers/cutadapt:1.16--py36_1
+```
+]
+.col-6[
+```yaml
+inputs:
+  quality_cutoff:
+    type: int
+    inputBinding:
+      prefix: -q
+
+  input_fastq:
+    type: File
+    inputBinding:
+      position: 0
+
+outputs:
+  trimmed_fastq:
+    type: stdout
+```
+]
+]
+]
+---
+## Arguments
+* The arguments section does actually have a use!
+* It's used for fixed arguments that need more configuration than the `baseCommand` section provides
+* `arguments` is a list of `inputBinding` objects, exactly the same as if they were inside an `inputs` entry
+* For example, if we wanted `bwa` to always use a fixed output name (since it doesn't matter anyway), we could remove this
+    ```yaml
+    inputs
+      - id: output_filename
+        type: string
     ```
-* Using a text editor, write a tool definition from scratch for `cutadapt`
+* And replace it with this
+    ```yaml
+    arguments:
+      - position: 0
+        valueFrom: alignment.sam
+    ```
+---
+## Updating cutadapt
+.alert.alert-primary[
+.alert-heading[
+### Exercise
+]
+* Cutadapt is invoked like this for paired reads (`q` is a quality cutoff):
+    ```bash
+    cutadapt -q 10 -o out.1.fastq -p out.2.fastq reads.1.fastq reads.2.fastq
+    ```
+* Using a text editor, edit your tool definition for `cutadapt`
+* `-o out.1.fastq` and `-p out.2.fastq` can be `arguments`
+* The output needs to be an array of files, and for this you can use a glob such as `out*fastq`
+]
+---
+## Updating cutadapt
+.alert.alert-success[
+.alert-heading[
+### Answer
 ]
 
+* [Download link](cwl/cutadapt-paired.cwl)
+
+.row[
+.col-6[
+```yaml
+class: CommandLineTool
+cwlVersion: v1.0
+
+baseCommand:
+  - cutadapt
+
+arguments:
+  - prefix: '-o'
+    valueFrom: out.1.fastq
+  - prefix: '-p'
+    valueFrom: out.2.fastq
+
+requirements:
+  - class: DockerRequirement
+    dockerPull: quay.io/biocontainers/cutadapt:1.16--py36_1
+```
+]
+.col-6[
+```yaml
+inputs:
+  quality_cutoff:
+    type: int
+    inputBinding:
+      prefix: -q
+
+  input_fastq:
+    type: File[]
+    inputBinding:
+      position: 0
+
+outputs:
+  trimmed_reads:
+    type: File[]
+    outputBinding:
+      glob: 'out.*.fastq'
+
+```
+]
+]
+]
 ---
 ## Workflows in CWL Files
 * Like CWL tools, workflows are represented in a YAML format
@@ -873,9 +1071,46 @@ steps:
 ---
 .alert.alert-primary[
 .alert-heading[
-## Exercise - Manual Workflow
+## Exercise - Adding Cutadapt
 ]
-* Using YAML, re-implement the basic germline variant calling workflow
-* As before, this should connect:
-    * `bwa` → `samtools sort` → `samtools index` → `freebayes`
+* Using a text editor, copy or edit your germline workflow, and add the cutadapt tool
+    * `cutadapt` will have to be a new stage in the workflow
+    * The `bwa` stage will have to be changed to take its inputs from `cutadapt`
+* Once you're finished, try to run the workflow with:
+    ```bash
+    cwltool cwl/germline_workflow_cutadapt.cwl --reference wildtype.fna --input_fastq mutant_R1.fastq --input_fastq mutant_R2.fastq
+    ```
+* You may have to add the secondary files to the workflow's inputs before it will let you run this
+    ```yaml
+    inputs:
+      - id: reference
+        type: File
+        secondaryFiles:
+          - .amb
+          - .ann
+          - .bwt
+          - .pac
+          - .sa
+    ```
+
+]
+---
+.alert.alert-primary[
+.alert-heading[
+## Final Exercise - Manual Workflow
+]
+* Rabix really butchered our workflow YAML
+* Try to re-write the germline workflow from scratch
+* This should now connect:
+    * `cutadapt` → `bwa` → `samtools sort` → `samtools index` → `freebayes`
+* Test it once you finish using `cwltool`
+]
+---
+class: center, middle
+
+.center[
+# That's All!
+.fa-container[
+.fas.fa-graduation-cap.fa-10x[]
+]
 ]

@@ -4,6 +4,12 @@ cwlVersion: v1.0
 baseCommand:
   - cutadapt
 
+arguments:
+  - prefix: '-o'
+    valueFrom: out.1.fastq
+  - prefix: '-p'
+    valueFrom: out.2.fastq
+
 inputs:
   quality_cutoff:
     type: int
@@ -11,13 +17,15 @@ inputs:
       prefix: -q
 
   input_fastq:
-    type: File
+    type: File[]
     inputBinding:
       position: 0
 
 outputs:
   trimmed_reads:
-    type: stdout
+    type: File[]
+    outputBinding:
+      glob: 'out.*.fastq'
 
 requirements:
   - class: DockerRequirement
