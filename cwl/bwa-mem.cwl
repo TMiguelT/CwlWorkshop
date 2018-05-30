@@ -22,7 +22,9 @@ inputs:
       - .sa
 outputs:
   - id: alignment
-    type: stdout
+    type: File
+    outputBinding:
+      glob: output.bam
 requirements:
   - class: DockerRequirement
     dockerPull: biocontainers/bwa

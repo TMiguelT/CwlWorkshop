@@ -1,52 +1,63 @@
 class: Workflow
 cwlVersion: v1.0
-
+$namespaces:
+  sbg: 'https://www.sevenbridges.com'
 inputs:
   - id: reference
     type: File
-    secondaryFiles:
-      - .amb
-      - .ann
-      - .bwt
-      - .pac
-      - .sa
+    'sbg:x': -454
+    'sbg:y': -152
   - id: reads
     type: 'File[]'
-
+    'sbg:x': -524
+    'sbg:y': 24
 outputs:
-  variants:
-    outputSource: freebayes/output
+  - id: output
+    outputSource:
+      - freebayes/output
     type: File
-
+    'sbg:x': 400.2967529296875
+    'sbg:y': 33
 steps:
-  bwa:
+  - id: bwa_mem
     in:
-      output_filename:
-        valueFrom: 'alignment.bam'
-      reads: reads
-      reference: reference
+      - id: reads
+        source:
+          - reads
+      - id: reference
+        source: reference
     out:
-      - alignment
-    run: bwa-mem.cwl
-
-  sort:
+      - id: alignment
+    run: ./bwa-mem.cwl
+    'sbg:x': -325.54144287109375
+    'sbg:y': 6.75
+  - id: samtools_index
     in:
-      alignment: bwa/alignment
+      - id: alignment
+        source: samtools_sort/sorted_alignment
     out:
-      - sorted_alignment
-    run: samtools-sort.cwl
-
-  index:
+      - id: alignment_with_index
+    run: ./samtools-index.cwl
+    'sbg:x': 98
+    'sbg:y': 44
+  - id: samtools_sort
     in:
-      alignments: sort/sorted_alignment
+      - id: alignment
+        source: bwa_mem/alignment
     out:
-      - alignments_with_index
-    run: samtools-index.cwl
-
-  freebayes:
+      - id: sorted_alignment
+    run: ./samtools-sort.cwl
+    'sbg:x': -109.703125
+    'sbg:y': 28
+  - id: freebayes
     in:
-      reference: reference
-      bam: index/alignments_with_index
+      - id: reference
+        source: reference
+      - id: bam
+        source: samtools_index/alignment_with_index
     out:
-      - output
-    run: freebayes.cwl
+      - id: output
+    run: ./freebayes.cwl
+    'sbg:x': 270.296875
+    'sbg:y': 41
+requirements: []

@@ -1,33 +1,33 @@
-cwlVersion: v1.0
 class: CommandLineTool
-
-baseCommand: bam-somaticsniper
-
-arguments:
-    - position: 2
-      valueFrom: output.vcf
-
+cwlVersion: v1.0
+$namespaces:
+  sbg: 'https://www.sevenbridges.com'
+baseCommand:
+  - bam-somaticsniper
 inputs:
-    reference:
-        inputBinding:
-            prefix: -f
-        type: File
-        label: Reference genome
-
-    tumour:
-        inputBinding:
-            position: 0
-        type: File
-        label: Tumour BAM
-
-    normal:
-        inputBinding:
-            position: 1
-        type: File
-        label: Normal BAM
-
+  - id: normal
+    type: File
+    inputBinding:
+      position: 1
+    label: Normal BAM
+  - id: reference
+    type: File
+    inputBinding:
+      position: 0
+      prefix: '-f'
+    label: Reference genome
+  - id: tumour
+    type: File
+    inputBinding:
+      position: 0
+    label: Tumour BAM
 outputs:
-    vcf:
-        type: stdout
-
+  - id: vcf
+    type: stdout
+arguments:
+  - position: 2
+    valueFrom: output.vcf
+requirements:
+  - class: DockerRequirement
+    dockerPull: 'quay.io/biocontainers/somatic-sniper:1.0.5.0--0'
 stdout: variants.vcf

@@ -18,4 +18,4 @@ outputs:
     outputBinding:
       glob: sorted_alignment.bam
 
-stdout: sorted_output.bam
+stdout: sorted_alignment.bam
