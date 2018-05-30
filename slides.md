@@ -57,10 +57,10 @@ Seq tools like `cuffdiff`
 * Downloads for Part 1:
     * Rabix Composer:
         * A graphical CWL editor
-        * Absolutely essential for the first part of this workshop
+        * **Absolutely essential for the first part of this workshop**
         * <https://github.com/rabix/composer/releases>
     * Test Data
-        * The data we will be using to test our workflows is located [here](https://swift.rc.nectar.org.au:8888/v1/AUTH_7ea859948c3a451c9baced6fee813ed1/CWL%20Workshop%20Assets/cwl.tar.gz).
+        * The data we will be using to test our workflows is located [here](data/data.tar.gz).
         * Please download it now so you have a copy for later
     * Docker
         * An engine for running tools inside containers
@@ -120,13 +120,39 @@ There are a few useful sources of CWL tool definitions:
 .col-8[
 * Clone the CWL Workflows repo
 * Open the repo in the Rabix Composer
-* Find and open the tool definition for `bwa mem` to ensure it's valid
+* Find and open the tool definition for `bwa mem`
+* Delete this line:
+    ```yaml
+    - $import: bwa-docker.yml
+    ```
+    * Although this is valid CWL, unfortunately Rabix doesn't support import statements
+* Open the visual editor
+![](images/visual_editor.png)
 ]
 .col-4[
 ![](images/rabix_open_project.png)
 ]
 ]
 ]
+---
+## Rabix Tool Overview
+.center[
+<img src="images/rabix_bwa_mem_overview.png" style="width: 600px">
+]
+---
+## Rabix Tool Overview
+* **Docker Image** defines an optional image in which to run this tool
+* **The Base Command** defines what command line tool to run
+    ![](images/bwa_basecommand.png)
+* **Arguments** are confusingly named - they won't be needed at all for today's workshop. Don't confuse this with **Input Ports**
+* The **Command Line** at the bottom builds up a bash command that should correspond to the tool you're wrapping
+---
+## Rabix Overview
+* **The Input Ports** define the input files and flags
+    ![](images/bwa_inputs.png)
+* **The Output Ports** define the output files
+    ![](images/bwa_outputs.png)
+
 ---
 ## Wrapping Samtools
 .alert.alert-primary[
@@ -151,22 +177,6 @@ Follow along with the instructions to make a tool wrapper for `samtools sort`
 ]
 ---
 ## Wrapping Samtools
-.row[
-.col-9[
-<img src="images/rabix_samtools_overview2.png" style="width: 550px">
-]
-.col-3[
-* The main sections we will focus on are:
-    * Base Command
-    * Input Ports
-    * Output Ports
-    * Other
-* Feel free to collapse the other sections
-* Ignore the Arguments section
-]
-]
----
-## Wrapping Samtools
 3\. Add the "base command" - the fixed part of the command that will never change
 
 * Make sure that each part of the command is on a new line
@@ -185,9 +195,12 @@ Each input has:
 * A type:
     * `boolean`, `int`, `long`, `float`, `double`, `string`, `File`, or `Directory` for single values
     * An array of the above types, e.g. `File[]`
+* Is either optional or required
 * A way for this input to be used on the command line. Either:
     * With a numerical `Position` for positional arguments like `gzip some_file`. Here the position is 0 (the first positional argument)
     * With a `Prefix` for named arguments, e.g. `java -jar something.jar`. Here the input prefix is `-jar`
+
+In this case, we want a required, `File`-type, positional input
 
 ]
 .col-4[
@@ -206,6 +219,8 @@ Each output has:
 * A type (same as an input)
 * A glob/filepath which indicates how to find this file. In this case, the file is located wherever we piped stdout
 
+In this case, we want a `File` type output with a fixed filename (`sorted_alignment.bam`)
+
 ]
 .col-4[
 ![](images/rabix_samtools_output.png)
@@ -221,6 +236,17 @@ glob
 ![](images/rabix_samtools_other.png)
 ]
 ---
+## Wrapping Samtools
+
+7\. If everything has been done correctly, you should have the following command line at the bottom of the page:
+```bash
+samtools sort /path/to/input.ext > sorted_alignment.bam
+```
+
+8\. Save your tool definition
+
+![](images/rabix_save.png)
+---
 ## Wrapping Freebayes
 .alert.alert-primary[
 .alert-heading[
@@ -233,15 +259,20 @@ reference genome
     freebayes --fasta-reference h.sapiens.fasta NA20504.bam
     ```
 * Write a new CWL tool wrapper for Freebayes that supports this command
+* If done correctly, your `Command Line` section should show something like:
+```bash
+freebayes /path/to/input.ext --fasta-reference /path/to/input.ext > variants.vcf
+```
 ]
 
 ---
 ## Docker
-* We have given CWL instructions on how to *run* these tools, but not how to *get* these tools
-* For this we can use Docker
+* We have given CWL instructions on how to *run* these tools, but not how to *get* these tools. For this we can use Docker
 * Docker images are tiny virtual machines that have applications pre-installed inside of them
-* You can find docker images of many common bioinformatics tools in [Biocontainers](https://biocontainers.pro/registry/)
-* Those that aren't on Biocontainers can probably be found by searching [Docker Store](https://store.docker.com/)
+* You can find docker images of bioinformatics tools:
+    * In [Biocontainers](https://biocontainers.pro/registry/)
+    * On [Docker Store](https://store.docker.com/), if you couldn't find them on Biocontainers
+* These sites will show a `docker pull` commmand in the form `docker pull username/imagename`. Just take the `username/imagename` section
 * Once you've found a Docker image, you can plug it into the "Docker Image" section in Rabix:
 
     ![](images/docker_container_section.png)
@@ -266,32 +297,53 @@ Now that we have a way to find the actual tools, we can start actually running C
 ]
 
 * Open the Test tab for the BWA tool
-* Double click each input bubble and browse for the appropriate file we downloaded at the start of this workshop
-* Make sure you add all the fasta indexes as secondary files for the fasta reference
+* Double click each input bubble and browse for the appropriate file we downloaded at the start of this workshop*
+* Double click the main bubble and set the output filename
+* Click "Run"
+![](images/run_button.png)
+* Find your output file by clicking the "Output Directory" button
 
 .center[
-![](images/rabix_bwa_test.png)
+<img style="height: 80%" src="images/rabix_bwa_test.png">
 ]
-
+\\* if this doesn't work you may have to specify secondary files for the reference
 ]
 
 
 ---
 ## Secondary Files
 * Some files, like indexes, are never considered a main file, but are instead designed to accompany another file,
-for example `.bai` files which accompany `bam` alignments, and `.tbi` indices which accompany `vcf` variant calls.
-* These are called secondary files:
-
-.center[
-![](images/secondary_file.png)
-]
+for example:
+    * `.bai` files accompany `bam` alignments
+    * `.tbi` indices which accompany `vcf` variant calls.
 * Secondary files can accompany both input and output files
 * The simplest way to specify secondary files is as a string that will be appended onto the main file
 * For example `.bai` means `main_file.bam.bai` is the secondary file name
 ---
+## Secondary Files
+* For example, if we open the `reference` Input Port from the `bwa-mem` tool, we will see:
+
+.center[
+![](images/bwa_secondary_files.png)
+]
+* This means that the genome reference file must be accompanied by an `.amb`, `.ann`, `.btw`, `.pac`, and `.sa` index
+
+---
+# Adding secondary files
+.alert.alert-primary[
+.alert-heading[
+### Exercise
+]
+* Freebayes requires an indexed BAM file (it has a `.bai` secondary file)
+* Freebayes also requires that the reference genome has a `.fai` index
+* Edit your Freebayes tool definition to include these indexes
+]
+
+---
 ## Dynamic Expressions
+### Motivation
 * Sometimes, some of the values in our CWL need to be calculated dynamically
-* For example, a command might create an output file whose name is based on the input file
+* A common situation where we need dynamic values is when a command creates an output file whose name is based on the input file
 * For example, `gzip file.txt` produces `file.txt.gz`
 * In order to do this, we can embed an expression in some CWL fields
 
@@ -321,7 +373,7 @@ for example `.bai` files which accompany `bam` alignments, and `.tbi` indices wh
         * `runtime.tmpdirSize`: reserved storage space available in the designated temporary directory
 ---
 ## Dynamic Expressions
-### JavaScript Expressions
+### JavaScript Expressions (advanced)
 * If you enable JavaScript expressions with the following line, you can use JavaScript in your expressions for even more
 power:
     ```yaml
@@ -352,132 +404,31 @@ but can now calculate values:
 .alert-heading[
 ### Exercise
 ]
-* Use what you have learned from wrapping `bwa` to make a wrapper for the `samtools index` subcommand
-* You can find the samtools manual, including all command-line flags for `samtools index` here: <http://www.htslib.org/doc/samtools.html#COMMANDS_AND_OPTIONS>
-* The output from `samtools index` will be the same BAM file that was input, but with its `.bai` index as a secondary file
-    * This means your output file Glob will use an expression to find the input filename
-    * Hint: `$(input.INPUTNAME.basename)` will return the full path to the input named `INPUTNAME`
-    * In addition, to grant access to this file, you need to add `$(input.INPUTNAME)` as an expression in the File Requirements
-    section
-]
----
-## Tool YAML
-
-* CWL tools are written in a structure called `YAML`
-* To view the raw YAML in the Rabix viewer, click the "Code" tab at the top
-* In YAML, key-value pairs in a dictionary are indicated by a colon `:` and list elements are indicated by a dash `-`:
-* The sections we previously worked on correspond to sections in the yaml file:
-    * "Base Command" → `baseCommand`
-    * "Output Ports" → `outputs`
-    * "Input Ports" → `inputs`
----
-## Tool YAML
-.row[
-.col-sm[
-```yaml
-class: CommandLineTool
-cwlVersion: v1.0
-id: bwa
-baseCommand:
-  - bwa
-  - mem
-inputs:
-  - id: reference
-    type: File
-    inputBinding:
-      position: 0
-  - id: reads
-    type: 'File[]'
-    inputBinding:
-      position: 1
-  - id: read_group
-    type: string?
-    inputBinding:
-      position: 0
-      prefix: '-R'
-```
-]
-
-.col-sm[
-```yaml
-outputs:
-  - id: alignment
-    type: File
-    outputBinding:
-      glob: alignment.bam
-label: bwa
-stdout: alignment.bam
-```
-]
-]
----
-## Tool YAML
-
-* This is a tool (as opposed to a workflow)
-    ```yaml
-    class: CommandLineTool
+* Part 1
+    * Samtools index is invoked as follows:
+    ```bash
+    samtools index aln.bam
     ```
-* This follows version 1.0 of the CWL standard:
-    ```yaml
-    cwlVersion: v1.0
-    ```
-* This tool is called `bwa`:
-    ```yaml
-    id: bwa
-    label: bwa
-    ```
-* The base command is `bwa mem`:
-    ```yaml
-    baseCommand:
-      - bwa
-      - mem
-      ```
+    * The output from `samtools index` will be a BAM file, with a `.bai` index as a secondary file
+    * Use what you have learned from wrapping `bwa` to make a wrapper for the `samtools index` subcommand, including
+    base command, inputs, outputs and docker image
+    * But what is the output `glob`...?
+]
 ---
+## Wrapping Samtools Index
 
-## Tool YAML
-.row[
-.col-sm[
-* The inputs:
-    ```yaml
-    inputs:
-      - id: reference
-        type: File
-        inputBinding:
-          position: 0
-      - id: reads
-        type: 'File[]'
-        inputBinding:
-          position: 1
-      - id: read_group
-        type: string?
-        inputBinding:
-          position: 0
-          prefix: '-R'
-    ```
-]
-.col-sm[
-* The outputs (including stdout):
-    ```yaml
-    outputs:
-      - id: alignment
-        type: File
-        outputBinding:
-          glob: alignment.bam
-    stdout: alignment.bam
-```
-]
-]
----
-## Wrapping Somatic Sniper
 .alert.alert-primary[
 .alert-heading[
 ### Exercise
 ]
-* Somatic Sniper is a (bad) somatic variant caller
-* Its command line usage can be found [here](https://github.com/genome/somatic-sniper/blob/master/gmt/documentation.md#usage)
-* Use what you've learned about YAML tool definitions to write a tool definition for `bam-somaticsniper`
-* Note that we want VCF output!
+* Part 2
+    * The tricky part is that the output BAM file is actually the same as the input file
+    * This means your output file Glob will use an expression to use the input file as the output
+    * Hint: `$(input.INPUTNAME.basename)` will return the full path to the input named `INPUTNAME`
+    * In addition, to grant access to this file, you need to add `$(input.INPUTNAME)` as an **expression** (not a file)
+    in the File Requirements section
 ]
+
 ---
 class: center, middle
 
@@ -515,13 +466,25 @@ class: center, middle
 </video>
 ]
 ---
-## Making a Variant Calling Pipeline in Rabix
+## A Variant Calling Pipeline in Rabix
 .alert.alert-primary[
 .alert-heading[
 ### Exercise
 ]
-* Make a basic workflow that connects:
+* In the "Visual Editor" tab, make a basic workflow that connects:
     * `bwa` → `samtools sort` → `samtools index` → `freebayes`
+* Set a value for the `output_filename` on BWA
+* Now, change to the "Test" tab, and run that workflow with the all of the test data provided
+* This should work the same as when we ran BWA
+]
+---
+## A Variant Calling Pipeline in Rabix
+.alert.alert-success[
+.alert-heading[
+### Answer
+]
+* You should have workflow a bit like this:
+<img src="images/germline_workflow.png" style="width: 100%">
 ]
 ---
 ## Subworkflows
@@ -543,8 +506,224 @@ logo:
 ]
 * First, make an alignment workflow that connects:
     * `bwa` → `samtools sort` → `samtools index`
+* Download a Somatic Sniper tool definition [from here](cwl/somatic-sniper.cwl)
 * Next, make a tumour-normal workflow that uses this workflow to align both the tumour and the normal reads, and then
-feeds the alignments into Somatic Sniper
+feeds the alignments into Somatic Sniper:
+    * `Tumour Alignment` → `Somatic Sniper` ← `Normal Alignment`
+]
+---
+# A Tumour-Normal Variant Caller
+.alert.alert-success[
+.alert-heading[
+### Answer
+]
+* Your alignment workflow should look like this
+<img src="images/alignment_workflow.png" style="width: 100%">
+]
+---
+# A Tumour-Normal Variant Caller
+.alert.alert-success[
+.alert-heading[
+### Answer
+]
+* And your somatic workflow should look like this:
+<img src="images/somatic_workflow.png" style="height: 90%">
+]
+---
+class: center, middle
+
+.center[
+# Part 4: YAML
+.fa-container[
+.fas.fa-keyboard.fa-10x[]
+]
+]
+---
+## Downloads for Part 4:
+* Python:
+    * Language runtime used by many CWL executors
+    * <https://www.python.org/downloads/>
+* cwltool:
+    * A simple CWL executor
+    * <https://github.com/common-workflow-language/cwltool#install>
+* Some text editor
+    * Your system editor is probably fine
+    * If not, I recommend Atom: <https://atom.io/>
+---
+## YAML Format
+
+* CWL tools and workflows are written in a format called `YAML`
+* YAML is a lot like JSON, however:
+    * Structures like dictionaries (maps) and arrays (lists) don't have delimiters like `{}` and `[]`. Instead, their type is
+    implied by their contents (`:` and `-`)
+    * Whitespace is used to indicate when an object is nested inside another
+
+.row[
+.col-6[
+#### YAML
+```yaml
+a_dictionary:
+  key: value
+  another_key: another value
+
+an_array:
+  - value
+  - another value
+
+an_integer: 3
+
+a_string: this is a string
+```
+]
+.col-6[
+#### JSON
+```json
+{
+  "a_dictionary": {
+    "key": "value",
+    "another_key": "another value"
+  },
+  "an_array": [
+    "value",
+    "another value"
+  ],
+  "an_integer": 3,
+  "a_string": "this is a string"
+}
+```
+]
+]
+---
+## Tool YAML
+```yaml
+class: CommandLineTool
+
+cwlVersion: v1.0
+
+baseCommand:
+  - samtools
+  - sort
+
+inputs:
+  - id: alignment
+    type: File
+    inputBinding:
+      position: 0
+
+outputs:
+  - id: sorted_alignment
+    type: File
+    outputBinding:
+      glob: sorted_alignment.bam
+
+stdout: sorted_output.bam
+```
+---
+## Tool YAML
+
+* This is a tool (as opposed to a workflow)
+    ```yaml
+    class: CommandLineTool
+    ```
+* This follows version 1.0 of the CWL standard:
+    ```yaml
+    cwlVersion: v1.0
+    ```
+* The base command is `samtools sort`:
+    ```yaml
+    baseCommand:
+      - samtools
+      - sort
+      ```
+---
+## Tool YAML
+
+.row[
+.col-6[
+The inputs:
+```yaml
+inputs:
+  - id: alignment
+    type: File
+    inputBinding:
+      position: 0
+  - id: sort_by_name
+    type: boolean?
+    inputBinding:
+      prefix: -n
+```
+* Inputs is a YAML array
+* Each entry has a name (`id`), and a type, like in the Rabix Composer
+* However, fields to do with command-line binding are put into the `inputBinding` dictionary. This includes `position`
+and `prefix`
+]
+.col-6[
+The outputs (including stdout):
+```yaml
+outputs:
+  - id: sorted_alignment
+    type: File
+    outputBinding:
+      glob: sorted_alignment.bam
+
+stdout: sorted_output.bam
+```
+* Each entry has a name (`id`), and a type, like in the Rabix Composer
+* The `glob` key is under `outputBinding`
+* `stdout` is its own section, there is no `other` section like in the Rabix Composer
+]
+]
+---
+## Dictionary vs Array Syntax
+* A number of sections in CWL can be written either as an array, or as a dictionary
+* These include:
+    * Inputs in a tool or workflow
+    * Outputs in a tool or workflow
+    * Steps in a workflow
+* Rabix uses the array syntax by default, but many tutorials will use the dictionary syntax, as it is generally more
+concise
+
+.row[
+.col-6[
+* I have shown you the array syntax, which looks like this:
+    ```yaml
+    inputs:
+      - id: alignment
+        type: File
+        inputBinding:
+          position: 0
+      - id: sort_by_name
+        type: boolean?
+        inputBinding:
+          prefix: -n
+    ```
+]
+.col-6[
+* If you turn this into a dictionary, with the `id` fields as the keys, this input list can be written as:
+    ```yaml
+    inputs:
+      alignment:
+        type: File
+        inputBinding:
+          position: 0
+      sort_by_name:
+        type: boolean?
+        inputBinding:
+          prefix: -n
+    ```
+]
+]
+
+---
+## Wrapping Somatic Sniper
+.alert.alert-primary[
+.alert-heading[
+### Exercise
+]
+* Somatic Sniper is a (bad) somatic variant caller
+* Its command line usage can be found [here](https://github.com/genome/somatic-sniper/blob/master/gmt/documentation.md#usage)
+* Use what you've learned about YAML tool definitions to write a tool definition for `bam-somaticsniper`
+* Note that we want VCF output!
 ]
 
 ---
@@ -637,14 +816,3 @@ steps:
 * As before, this should connect:
     * `bwa` → `samtools sort` → `samtools index` → `freebayes`
 ]
----
-
-* Downloads for Part 2:
-    * cwltool:
-        * A simple CWL executor
-        * <https://github.com/common-workflow-language/cwltool#install>
-    * Python 3:
-        * Language runtime used by many CWL executors
-        * <https://www.python.org/downloads/>
-
-
