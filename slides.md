@@ -297,11 +297,23 @@ freebayes /path/to/input.ext --fasta-reference /path/to/input.ext > variants.vcf
 * Docker images are tiny virtual machines that have applications pre-installed inside of them
 * You can find docker images of bioinformatics tools:
     * In [Biocontainers](https://biocontainers.pro/registry/)
-    * On [Docker Store](https://store.docker.com/), if you couldn't find them on Biocontainers
+    * On [Bioconda](https://bioconda.github.io/recipes.html)
+    * On [Docker Store](https://store.docker.com/)
 * These sites will show a `docker pull` commmand in the form `docker pull username/imagename`. Just take the `username/imagename` section
 * Once you've found a Docker image, you can plug it into the "Docker Image" section in Rabix:
 
     ![](images/docker_container_section.png)
+
+---
+## Bioconda
+* To find Bioconda images
+    * Open the [Bioconda search page](https://bioconda.github.io/recipes.html)
+    * Search for the tool you want
+    * Click any version of that tool
+    * On the tool page, follow the link to its container
+    * Click the Tag button on the left
+    * Pick a version you want, and, click the Download button next to it
+    * Choose the Docker Pull (by tag) option
 
 ---
 ## Updating our tool to use Docker
